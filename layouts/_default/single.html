@@ -25,23 +25,26 @@
                 <div
                   class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0 md-nopad-right"
                 >
-                  <img
-                    class="author-thumb"
-                    src="{{ $resizeImg.Permalink }}"
-                    alt="Author"
-                  />
+                  <a href="/about">
+                    <img
+                      class="author-thumb"
+                      src="{{ $resizeImg.Permalink }}"
+                      alt="Author"
+                    />
+                  </a>
                 </div>
               {{ end }}
               <div
                 class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left md-nopad-left"
               >
-                <a target="_blank" class="link-dark"
+                <a href="/about" class="link-dark"
                   >{{ .Site.Params.author.firstName }}
                   {{ .Site.Params.author.lastName }}</a
-                ><br />
+                >
+                <br />
                 <span class="author-description">
                   {{ .Site.Params.author.jobTitle }}<br />
-                  <i class="far fa-star"></i>
+
                   {{ dateFormat "Jan 2, 2006" .PublishDate }}
                   <i class="far fa-clock clock"></i>
                   {{ .ReadingTime }} min read

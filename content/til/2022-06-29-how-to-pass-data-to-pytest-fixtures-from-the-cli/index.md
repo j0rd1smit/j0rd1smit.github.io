@@ -1,5 +1,5 @@
 ---
-title: "How to pass data to PyTest fixtures from the CLI."
+title: "How to pass data to PyTest fixtures from the CLI"
 date: 2022-06-29T21:45:20+02:00
 publishdate: 2022-06-29T21:45:20+02:00
 tags: []
