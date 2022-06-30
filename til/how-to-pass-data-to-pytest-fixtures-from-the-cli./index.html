@@ -9,14 +9,25 @@ The test cases were relatively straightforward to write.
 However, the tricky part was that I wanted to use these test cases for both my stage and production deployment, which of course, have different URLs.
 At first, I was trying to solve the problem by passing the deployment URL via environment variables.
 Although this worked, it didn&rsquo;t feel like the right solution since it felt rather complicated, and it didn&rsquo;t work nicely in scenarios where someone forgot to set the environment variables.</p><p>So I went searching for a better solution. Eventually, I found a solution that allows me to pass the URL parameter using the following command: <code>pytest --url SOME_VALUE</code>.
-It works using the following code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> Optional
+It works using the following code:</p><div class=highlight><div style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><table style=border-spacing:0;padding:0;margin:0;border:0><tr><td style=vertical-align:top;padding:0;margin:0;border:0><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13
+</span></code></pre></td><td style=vertical-align:top;padding:0;margin:0;border:0;width:100%><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> Optional
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#f92672>import</span> pytest
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>pytest_addoption</span>(parser):
 </span></span><span style=display:flex><span>    parser<span style=color:#f92672>.</span>addoption(<span style=color:#e6db74>&#34;--url&#34;</span>, action<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;store&#34;</span>)
-</span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#a6e22e>@pytest</span><span style=color:#f92672>.</span>fixture(scope<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;session&#34;</span>)
 </span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>url</span>(request: pytest<span style=color:#f92672>.</span>FixtureRequest) <span style=color:#f92672>-&gt;</span> Optional[str]:
@@ -24,7 +35,7 @@ It works using the following code:</p><div class=highlight><pre tabindex=0 style
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> url_value <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
 </span></span><span style=display:flex><span>        pytest<span style=color:#f92672>.</span>skip()
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> url_value
-</span></span></code></pre></div><p>In this code snippet, I used the <code>pytest_addoption</code> function in the top-level <code>conftest.py</code> file to add the <code>--url</code> parameter to the <code>pytest</code> CLI.
+</span></span></code></pre></td></tr></table></div></div><p>In this code snippet, I used the <code>pytest_addoption</code> function in the top-level <code>conftest.py</code> file to add the <code>--url</code> parameter to the <code>pytest</code> CLI.
 Now, the optional value of the url parameter becomes available in the <code>pytest.FixtureRequest</code> config options, which means we can expose it as a PyTest fixture.</p><p>What I really like about this solution is that works with both the <code>pytest --url SOME_URL</code> and <code>pytest</code> command.
 This works because if the <code>url</code> parameter is not defined, all test cases that depend on the <code>url</code> fixture will be skipped due to the <code>pytest.skip()</code>.</p></div><div class=after-post-tags><ul class=tags></ul></div><div class="row PageNavigation d-flex justify-content-between font-weight-bold"><div class=clearfix></div></div></div></div></div></div></div></div><footer class="footer mt-auto"><div class=container><div class=row><div class="col-md-12 col-sm-612 text-center">&copy; Copyright
 Jordi Smit - All rights reserved</div></div></div></footer><script src=https://j0rd1smit.github.io/js/jquery-3.4.1.min.4c24dfd28784ad2befb3dafaac6bf1ed4e7cd58cce713d9a0b228d426e812baf.js integrity="sha256-TCTf0oeErSvvs9r6rGvx7U581YzOcT2aCyKNQm6BK68="></script>
