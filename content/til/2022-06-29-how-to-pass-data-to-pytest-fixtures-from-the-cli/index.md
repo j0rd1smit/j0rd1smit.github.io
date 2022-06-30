@@ -4,7 +4,7 @@ date: 2022-06-29T21:45:20+02:00
 publishdate: 2022-06-29T21:45:20+02:00
 tags: []
 image: "/cover.png"
-draft: true
+draft: false
 math: false
 ---
 A short while ago, I needed to create some high-level smoke tests that tested whether an API I deployed was working as intended.
