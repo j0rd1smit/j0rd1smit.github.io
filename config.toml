@@ -1,4 +1,4 @@
-baseURL = 'http://localhost:8000/'
+baseURL = 'https://j0rd1smit.github.io/'
 languageCode = 'en-us'
 title = 'J0rd1Smit'
 copyright = "Jordi Smit - All rights reserved"
