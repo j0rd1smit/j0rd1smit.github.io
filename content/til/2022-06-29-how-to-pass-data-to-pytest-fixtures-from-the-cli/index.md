@@ -16,15 +16,13 @@ Although this worked, it didn't feel like the right solution since it felt rathe
 So I went searching for a better solution. Eventually, I found a solution that allows me to pass the URL parameter using the following command: `pytest --url SOME_VALUE`.
 It works using the following code:
 
-```python
+```python {linenos=table,hl_lines=[],linenostart=1}
 from typing import Optional
 
 import pytest
 
-
 def pytest_addoption(parser):
     parser.addoption("--url", action="store")
-
 
 @pytest.fixture(scope="session")
 def url(request: pytest.FixtureRequest) -> Optional[str]:
