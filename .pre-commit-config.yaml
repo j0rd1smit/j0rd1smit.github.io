@@ -1,0 +1,36 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.0.1
+  hooks:
+  - id: check-added-large-files
+    args: [--maxkb=250]
+  - id: detect-private-key
+  - id: check-yaml
+  - id: check-toml
+  - id: check-vcs-permalinks
+  - id: check-case-conflict
+  - id: check-symlinks
+  - id: check-merge-conflict
+  - id: destroyed-symlinks
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+          #  - id: no-commit-to-branch
+          #    args: [--branch, main, --branch, dev]
+
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: pretty-format-toml
+    args: [--autofix]
+    exclude: .*\.lock
+  - id: pretty-format-yaml
+    args: [--autofix]
+
+- repo: https://github.com/pre-commit/mirrors-prettier
+  rev: v2.7.1
+  hooks:
+  - id: prettier
+    additional_dependencies:
+    - prettier@2.7.1
+    - prettier-plugin-go-template@0.0.13
+

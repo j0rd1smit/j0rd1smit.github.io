@@ -1,0 +1,21 @@
+<header class="text-center">
+  {{ $authorImg := resources.Get .Site.Params.author.thumbnail }}
+  {{ with
+    $authorImg
+  }}
+    {{ $resizeImg := .Resize "350x" }}
+    <a href="/about">
+      <img
+        src="{{ $resizeImg.Permalink }}"
+        class="rounded-circle text-center index-image"
+      />
+    </a>
+  {{ end }}
+  <a href="/about">
+    <h1 class="index-title">
+      {{ .Site.Params.author.firstName }}
+      {{ .Site.Params.author.lastName }}
+    </h1>
+    <h5 class="index-text">{{ .Site.Params.index.subtitle }}</h5>
+  </a>
+</header>

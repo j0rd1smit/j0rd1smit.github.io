@@ -1,0 +1,67 @@
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  {{ hugo.Generator }}
+  {{ with .Site.Params.logo }}
+    <link rel="icon" href="{{ . | urlize | relURL }}" />
+  {{ end }}
+  <title>{{ .Page.Title }} | {{ .Site.Title }}</title>
+  {{ with .Site.Params.meta.description }}
+    <meta name="description" content="{{ . }}" />
+  {{ end }}
+  {{ with .Site.Params.meta.keywords }}
+    <meta name="keywords" content="{{ . }}" />
+  {{ end }}
+  {{ template "_internal/twitter_cards.html" . }}
+  {{ template "_internal/opengraph.html" . }}
+  {{ $bootstrap := resources.Get "/css/bootstrap.min.css" | resources.Fingerprint }}
+  <link
+    rel="stylesheet"
+    href="{{ $bootstrap.RelPermalink | absURL }}"
+    integrity="{{ $bootstrap.Data.Integrity }}"
+  />
+
+  {{ $goolge_fonts := resources.Get "/css/goolge-fonts.css" | resources.Fingerprint }}
+  <link
+    rel="stylesheet"
+    href="{{ $goolge_fonts.RelPermalink | absURL }}"
+    integrity="{{ $goolge_fonts.Data.Integrity }}"
+  />
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+    integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous"
+  />
+
+  {{ $medium := resources.Get "/css/medium.css" | resources.Fingerprint }}
+  <link
+    rel="stylesheet"
+    href="{{ $medium.RelPermalink | absURL }}"
+    integrity="{{ $medium.Data.Integrity }}"
+  />
+
+  {{ $additional := resources.Get "/css/additional.css" | resources.Fingerprint }}
+  <link
+    rel="stylesheet"
+    href="{{ $additional.RelPermalink | absURL }}"
+    integrity="{{ $additional.Data.Integrity }}"
+  />
+
+  <!-- Custom css -->
+
+  {{ range .Site.Params.customCSS -}}
+    {{ $style := resources.Get . }}
+    <link
+      rel="stylesheet"
+      href="{{ $style.RelPermalink }}"
+      integrity="{{ $style.Data.Integrity }}"
+      crossorigin="anonymous"
+      media="screen"
+    />
+  {{- end }}
+</head>

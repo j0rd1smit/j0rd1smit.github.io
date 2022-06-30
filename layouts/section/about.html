@@ -1,0 +1,15 @@
+{{ define "header" }}
+  {{- partial "_shared/navbar.html" . -}}
+{{ end }}
+{{ define "main" }}
+  <div class="main-content">
+    {{- partial "_shared/authorHeader.html" . -}}
+    {{- partial "_shared/social.html" . -}}
+
+
+    <section class="text-justify">{{ .Content }}</section>
+  </div>
+{{ end }}
+{{ define "footer" }}
+  {{- partial "_shared/footer.html" . -}}
+{{ end }}

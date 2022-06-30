@@ -1,0 +1,8 @@
+*.min.*
+*.yaml
+*yml
+*.md
+public
+themes
+.idea
+resources

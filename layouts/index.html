@@ -1,0 +1,29 @@
+{{ define "header" }}
+  {{- partial "_shared/navbar.html" . -}}
+{{ end }}
+
+{{ define "main" }}
+  <div class="main-content">
+    {{- partial "_shared/authorHeader.html" . -}}
+    {{- partial "_shared/social.html" . -}}
+
+
+    <div class="section-title">
+      <h2><span>Recent Posts</span></h2>
+    </div>
+
+    <div class="row listrecent">
+      {{ $blog_posts := (where .Site.RegularPages "Section" "blog" ) }}
+      {{ $tils := (where .Site.RegularPages "Section" "til" ) }}
+      {{ $posts := ($blog_posts | union $tils ) }}
+      {{ $post_paginator := .Paginate ($posts) 3 }}
+      {{ range $post_paginator.Pages }}
+        {{- partial "list-partials/postbox.html" . -}}
+      {{ end }}
+    </div>
+  </div>
+{{ end }}
+
+{{ define "footer" }}
+  {{- partial "_shared/footer.html" . -}}
+{{ end }}

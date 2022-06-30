@@ -1,0 +1,27 @@
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+{{ $jquery := resources.Get "/js/jquery-3.4.1.min.js" | resources.Fingerprint }}
+<script
+  src="{{ $jquery.RelPermalink | absURL }}"
+  integrity="{{ $jquery.Data.Integrity }}"
+></script>
+
+{{ $popper := resources.Get "/js/popper.min.js" | resources.Fingerprint }}
+<script
+  src="{{ $popper.RelPermalink | absURL }}"
+  integrity="{{ $popper.Data.Integrity }}"
+></script>
+
+{{ $bootstrap := resources.Get "/js/bootstrap.min.js" | resources.Fingerprint }}
+<script
+  src="{{ $bootstrap.RelPermalink | absURL }}"
+  integrity="{{ $bootstrap.Data.Integrity }}"
+></script>
+
+{{ $mediumish := resources.Get "/js/mediumish.js" | resources.Fingerprint }}
+<script
+  src="{{ $mediumish.RelPermalink | absURL }}"
+  integrity="{{ $mediumish.Data.Integrity }}"
+></script>
