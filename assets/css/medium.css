@@ -114,10 +114,13 @@ section.recent-posts {
 
 .maxthumb {
   height: 250px;
+  width: 100%;
   overflow: hidden;
+  text-align: center;
 }
 .maxthumb img {
   height: 100%;
+  width: 100%;
   object-fit: cover;
 }
 

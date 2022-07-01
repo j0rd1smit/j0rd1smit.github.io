@@ -1,15 +1,15 @@
 <!-- begin post -->
 <div class="col-lg-4 col-md-12 mb-30px card-group">
   <div class="card h-100">
-    <div class="maxthumb">
-      <a href="{{ .Permalink }}">
+    <a href="{{ .Permalink }}">
+      <div class="maxthumb">
         {{ $images := .Resources.ByType "image" }}
         {{ with $images.GetMatch "images/cover*" }}
           {{ $resizeImg := .Resize "600x" }}
           <img src="{{ $resizeImg.Permalink }}" alt="A thumbnail image" />
         {{ end }}
-      </a>
-    </div>
+      </div>
+    </a>
     <div class="card-body">
       <h2 class="card-title">
         <a class="text-dark" href="{{ .Permalink }}">
