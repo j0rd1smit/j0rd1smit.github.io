@@ -6,7 +6,7 @@ tags: []
 image: "/cover.jpg"
 use_featured_image: false
 featured_image_size: 200x
-draft: true
+draft: false
 math: false
 ---
 
