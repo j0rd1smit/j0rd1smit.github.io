@@ -6,6 +6,8 @@ tags: []
 image: "/cover.png"
 draft: false
 math: false
+use_featured_image: true
+featured_image_size: 600x
 ---
 A short while ago, I needed to create some high-level smoke tests that tested whether an API I deployed was working as intended.
 The test cases were relatively straightforward to write.

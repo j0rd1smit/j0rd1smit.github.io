@@ -6,6 +6,8 @@ tags: []
 image: "/cover.png"
 draft: false
 math: false
+use_featured_image: true
+featured_image_size: 600x
 ---
 Shell scripts and commands are a programmer's superpower.
 They allow you to automate repetitive tasks and can make you 10x more productive.

@@ -56,18 +56,25 @@
           </div>
 
           <!-- Post Featured Image -->
-          {{ $images := .Resources.ByType "image" }}
-          {{ with $images.GetMatch
-            "images/cover*"
-          }}
-            {{ $resizeImg := .Resize "800x" }}
-            <img
-              class="featured-image img-fluid"
-              src="{{ $resizeImg.Permalink }}"
-              alt="thumbnail for this post"
-            />
+          {{ if .Params.use_featured_image }}
+            {{ $featured_image_size := .Params.featured_image_size }}
+
+            {{ $images := .Resources.ByType "image" }}
+            {{ with $images.GetMatch
+              "images/cover*"
+            }}
+              {{ $resizeImg := .Resize $featured_image_size }}
+              <div class="post-featured-image">
+                <img
+                  class="img-fluid"
+                  src="{{ $resizeImg.Permalink }}"
+                  alt="thumbnail for this post"
+                />
+              </div>
+            {{ end }}
+            <!-- End Featured Image -->
           {{ end }}
-          <!-- End Featured Image -->
+
 
           <!-- Post Content -->
           <div class="article-post">{{ .Content }}</div>
