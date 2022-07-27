@@ -49,3 +49,4 @@ linkedin = "👋jordi-smit-8778b51b4"
 [permalinks]
 blog = '/blog/:title'
 til = '/til/:title'
+cheat-sheets = '/cheat-sheets/:title'
