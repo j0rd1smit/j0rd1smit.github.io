@@ -4,7 +4,7 @@ date: 2022-07-27T20:05:21+02:00
 publishdate: 2022-07-27T20:05:21+02:00
 tags: []
 image: "/cover.jpg"
-use_featured_image: true
+use_featured_image: false
 featured_image_size: 200x
 draft: true
 math: false
