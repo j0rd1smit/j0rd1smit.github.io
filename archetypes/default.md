@@ -3,9 +3,11 @@ title: "{{ replace (replaceRE "[0-9]{4}-[0-9]{2}-[0-9]{2}-" "" .Name) "-" " " | 
 date: {{ .Date }}
 publishdate: {{ .Date }}
 tags: []
-image: "/cover.png"
 draft: true
 math: flase
+image: "/cover.png"
+use_featured_image: true
+featured_image_size: 600x
 ---
 
 TODO: default

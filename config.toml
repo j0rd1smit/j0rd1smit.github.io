@@ -17,9 +17,15 @@ weight = 200
 url = "/til"
 
 [[menu.main]]
+name = "Cheat-sheets"
+identifier = "cheat-sheets"
+weight = 300
+url = "/cheat-sheets"
+
+[[menu.main]]
 name = "About Me"
 identifier = "about"
-weight = 300
+weight = 400
 url = "/about"
 
 [params]

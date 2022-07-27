@@ -1,14 +1,23 @@
-name: Publish Site
+name: CICD
 
 on:
   push:
     branches:
     - main
   pull_request:
+    branches:
+    - main
 
 jobs:
+  pre_commit:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pre-commit/action@v2.0.3
+
   build-deploy:
     runs-on: ubuntu-20.04
+    needs: pre_commit
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
