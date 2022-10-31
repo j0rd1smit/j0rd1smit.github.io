@@ -1,14 +1,22 @@
-.PHONY: blog till
+.PHONY: blog till dev
+
 
 TIMESTAMP = $(shell date +'%Y-%m-%d')
 
-
+# Make a new blog post.
 blog:
-	@read -p "Enter Module Name:" name; \
-	name="blog/$(TIMESTAMP)-$$name"; \
+	echo "Enter name of TIL:"; \
+	read name; \
+	name="blog/$(TIMESTAMP)-$$(echo $$name | tr ' ' '-')"; \
 	hugo new --kind post $$name
 
+# Make a new til post.
 til:
-	@read -p "Enter Module Name:" name; \
-	name="til/$(TIMESTAMP)-$$name"; \
+	echo "Enter name of TIL:"; \
+	read name; \
+	name="til/$(TIMESTAMP)-$$(echo $$name | tr ' ' '-')"; \
 	hugo new --kind post $$name
+
+# Start a local dev server.
+dev:
+	hugo -D server
