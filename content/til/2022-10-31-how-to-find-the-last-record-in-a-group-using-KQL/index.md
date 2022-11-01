@@ -19,10 +19,10 @@ So to create this dashboard, I had to do the following:
 3. Create a plot that shows the total number of deployments per load balancer over time.
 
 Today I learned that you could implement step 1 using the `arg_max` in Azure's Application Insight querying language (KQL). 
-The `arg_max(x, y)  by z` function finds the record with the largest value for `x` in group `z` and then returns the columns `y`. 
+The `arg_max(x, y)  by z1, ..., zn` function finds the record with the largest value for `x` in group `z_i` and then returns the columns `y`. 
 In our case, we can use `summarize arg_max(timestamp, *) by endpoint, deployment, bin(timestamp, 5m)` to find the record with the largest timestamp in our endpoint, deployment, and interval group. 
-In this case, use `*` to indicate that the `arg_max` function should return all the columns of the selected record. 
-So, with this new insight, we can build our dashboard using the following KQL query.
+In this case, we use `*` to indicate that the `arg_max` function should return all the columns of the selected record. 
+So, with this new insight, we can get the data for our dashboard using the following KQL query.
 
 ```kql
 requests
