@@ -17,7 +17,7 @@
       {{ $tils := (where .Site.RegularPages "Section" "til" ) }}
       {{ $posts := ($blog_posts | union $tils ) }}
       {{ $post_paginator := .Paginate ($posts) 3 }}
-      {{ range $post_paginator.Pages }}
+      {{ range $post_paginator.Pages.ByPublishDate.Reverse }}
         {{- partial "list-partials/postbox.html" . -}}
       {{ end }}
     </div>
