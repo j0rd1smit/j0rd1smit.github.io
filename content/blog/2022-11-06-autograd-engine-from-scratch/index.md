@@ -14,46 +14,22 @@ TODO: post
 
 
 ## Differentiation refresher
-defination
-$$
-L = x
-$$
-$$
-\frac{\partial L}{\partial L} = 1
-$$
-addition rule
-$$
-L = x_1 + x_2
-$$
-$$
-\frac{\partial L}{\partial x_1} = 1
-$$
-$$
-\frac{\partial L}{\partial x_2} = 1
-$$
 
-Multiplication rule
-$$
-L = x_1 * x_2
-$$
-$$
-\frac{\partial L}{\partial x_1} = x_2
-$$
-$$
-\frac{\partial L}{\partial x_2} = x_1
-$$
-Power rule
-$$
-L = c * x^n
-$$
-$$
-\frac{\partial L}{\partial x} = c * n * x^{n-1}
-$$
+{{<table "table table-striped table-bordered">}}
 
-Chain rule:
-$$
-\frac{\partial L}{\partial x} = \frac{\partial L}{\partial x} \frac{\partial z}{\partial z} = \frac{\partial L}{\partial z} \frac{\partial z}{\partial z}
-$$
+| Name                         |    Function     |                                                                         Derivative                                                                          |
+|------------------------------|:---------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| Definition                   |        -        |                                                             $\frac{\partial L}{\partial L} = 1$                                                             |
+| (Unrelated) constant rule    |     $L = c$     |                                                             $\frac{\partial L}{\partial x} = 0$                                                             |
+| Sum rule                     | $L = x_1 + x_2$ |                                        $\frac{\partial L}{\partial x_1} = 1$, $\frac{\partial L}{\partial x_2} = 1$                                         |
+| Multiplication rule          | $L = x_1 * x_2$ |                                      $\frac{\partial L}{\partial x_1} = x_2$, $\frac{\partial L}{\partial x_2} = x_1$                                       |
+| Constant multiplication rule |    $L = c*x$    |                                                             $\frac{\partial L}{\partial x} = c$                                                             |
+| Power rule                   |  $L = c * x^n$  |                                                      $\frac{\partial L}{\partial x} = c * n * x^{n-1}$                                                      |
+| Chain rule                   |        -        | $\frac{\partial L}{\partial x} = \frac{\partial L}{\partial x} \frac{\partial y}{\partial y} = \frac{\partial L}{\partial y} \frac{\partial x}{\partial y}$ |
+| Tanh                         |  $L = tanh(x)$  |                                                      $\frac{\partial L}{\partial x} = 1 - (tanh(x))^2$                                                      |
+
+{{</table>}}
+
 
 ## Back propagation 
 $$
@@ -240,3 +216,4 @@ print(f"date={x_5.date} grad={x_5.grad}") # date=17 grad=2
 print(f"date={x_6.date} grad={x_6.grad}") # date=2 grad=17
 print(f"date={l.date} grad={l.grad}")     # date=34 grad=1
 ```
+
