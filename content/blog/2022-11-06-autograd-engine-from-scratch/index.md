@@ -1,7 +1,7 @@
 ---
 title: "DIY auto-grad Engine: A Step-by-Step Guide to Calculating Derivatives Automatically"
-date: 2022-12-23TT16:37:27+01:00
-publishdate: 2022-12-23T16:37:27+01:00
+date: 2022-12-22TT16:37:27+01:00
+publishdate: 2022-12-22T16:37:27+01:00
 tags: []
 draft: false
 math: true
