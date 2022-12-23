@@ -1,5 +1,5 @@
 ---
-title: "DIY Auto Grad Engine: A Step-by-Step Guide to Calculating Derivatives Automatically"
+title: "DIY auto-grad Engine: A Step-by-Step Guide to Calculating Derivatives Automatically"
 date: 2022-11-06T16:37:27+01:00
 publishdate: 2022-11-06T16:37:27+01:00
 tags: []
@@ -49,9 +49,9 @@ However, before we get there, let’s first review the backpropagation algorithm
 
 ## Back propagation 
 
-Backpropagation is an algorithm that is used to automatically calculate the derivatives of functions.
-It works by constructing a computational graph of the network and then iteratively calculating the gradients of each node based on the chain rule.
-I can imagine that you're already thinking: "Well that sound a bit vague to me".
+Backpropagation is an algorithm that automatically calculates the functions' derivatives.
+It works by constructing a computational graph and then iteratively calculating the gradients of each node based on the chain rule.
+I can imagine that you're already thinking: "Well, that sounds a bit vague to me".
 So let's see how this work using a running example.
 We want to calculate the derivatives of $L$ with respect to every $x_i$:
 
@@ -77,16 +77,17 @@ $$
 L = 34
 $$
 
-The first we need to do is transform this function into a computational graph.
+The first thing we need to do is transform this function into a computational graph.
 For example, we can view the equation above as the following graph:
 
 
 {{< figure src="images/computational_graph.png" caption="A visualization of the computational graph." >}}
 
-The goal is to find the gradients with respect to $L$ for every node in this computational graph. 
-Calculating the gradients for $x_1$ and $x_2$ looks quite difficult.
-However, find the calculating gradients for $x_5$ and $x_6$ is a bit easier since we can look up their derivation rules in the table above.
-So according to table above, we have:
+The goal is to find the gradients with respect to $L$ for every node in this computational graph.
+Calculating the gradients for $x_1$ and $x_2$ looks quite tricky.
+However, it is a bit easier to find the calculating gradients for $x_5$ and $x_6$ since we can look up their derivation rules in the table above.
+So, according to the table above, we have:
+
 $$
 \frac{\partial L}{\partial L} = 1
 $$
@@ -101,42 +102,50 @@ So, let's update our computational graph with these gradients:
 
 {{< figure src="images/computation_graph_with_gradients_partial_1.jpg" caption="A visualization of the computational graph and the gradients so far." >}}
 
-Now, the question is how do we calculate the gradients for $x_3$ and $x_4$?
-We know the gradients for $x_5$, which the parent node of $x_3$ and $x_4$.
+Now, the question is, how do we calculate the gradients for $x_3$ and $x_4$?
+We know the gradients of $x_5$, which is the parent node of $x_3$ and $x_4$.
 So, we can use the chain rule and the sum rule to rewrite the gradients for $x_3$ and $x_4$ as follows:
+
 $$
-\frac{\partial L}{\partial x_3} = \frac{\partial L}{\partial x_3} \frac{\partial x_5}{\partial x_5} = \frac{\partial L}{\partial x_5} \frac{\partial x_5}{\partial x_3} = 1 * 2 = 2
+\frac{\partial L}{\partial x_3} = \frac{\partial L}{\partial x_3} \frac{\partial x_5}{\partial x_5} = \frac{\partial L}{\partial x_5} \frac{\partial x_5}{\partial x_3} = 2 * 1 = 2
 $$
 $$
-\frac{\partial L}{\partial x_4} = \frac{\partial L}{\partial x_4} \frac{\partial x_5}{\partial x_5} = \frac{\partial L}{\partial x_5} \frac{\partial x_5}{\partial x_4} = 1 * 2 = 2
+\frac{\partial L}{\partial x_4} = \frac{\partial L}{\partial x_4} \frac{\partial x_5}{\partial x_5} = \frac{\partial L}{\partial x_5} \frac{\partial x_5}{\partial x_4} = 2 * 1 = 2
 $$
 
-So, by using the chain rule we change the gradient formulate into the local gradient times the gradient of the parent node, which we both know if we apply the chain rule recursively.
-Let's continue by filling in these result into our computational graph, we get the following:
+So, by using the chain rule, we change the gradient formula into the local gradient times the gradient of the parent node, which we both know.
+Let’s continue by filling in these results into our computational graph:
 
 {{< figure src="images/computation_graph_with_gradients_partial_2.jpg" caption="A visualization of the computational graph and the gradients so far." >}}
 
-For $x_1$ and $x_2$, we again use the chain rule and the multiplication rule to calculate the gradients.
+Thanks to the previous step, the gradient of the parent node of x_1 and x_2 is now known.
+Therefore, we can again use the chain rule to change the initially complex derivative formulas into the local gradients times the gradient of the parent.
+$$
+\frac{\partial L}{\partial x_1} = \frac{\partial L}{\partial x_1} \frac{\partial x_3}{\partial x_3} = \frac{\partial L}{\partial x_3} \frac{\partial x_5}{\partial x_1} = 2 * 3 = 6
+$$
+$$
+\frac{\partial L}{\partial x_2} = \frac{\partial L}{\partial x_2} \frac{\partial x_3}{\partial x_3} = \frac{\partial L}{\partial x_3} \frac{\partial x_5}{\partial x_2} = 2 * 4 = 8
+$$
 This give finally the following computational graph:
 {{< figure src="images/computation_graph_with_gradients.png" caption="A visualization of the computational graph with all gradients." >}}
 
-So, we have now calculated the gradients for every node in the computational graph.
+We have now calculated the gradients for every node in the computational graph.
 With these gradients, we know exactly how changes to any of the $x_i$ will impact the value of $L$.
 So, let summarize what we have done so far: 
 1. We have constructed a computational graph of the function $L$.
-2. We set the gradients of the leaf nodes $L$ to 1.
+2. We set the gradients of the leaf node $L$ to 1.
 3. We iteratively calculated the gradients of each node in reversed topological order based on the chain rule and the local differentiation rules from the table above.
 
 It is nice that we know how to do this manually, but it is a bit tedious.
-So, let's see how we can automate this using an auto grad engine.
+So, let's see how we can automate this using an auto-grad engine.
 
 
 ## Implementing the Autograd Engine
-In this section, we will focus on building a Python data structure that keeps track of the computation graph and local gradients.
+In this section, we will focus on building a Python data structure that keeps track of the computational graph and local gradients.
 This will allow us to perform automatic differentiation, which is the key to implementing an autograd engine.
 To keep track of the computational graph and local gradients, we will implement a `Value` class. This class will have the following attributes:
 
-- `data`: A float representing the current value of the node in the computation graph.
+- `data`: A float representing the current value of the node in the computational graph.
 - `children`: A set containing the child nodes that contributed to this computation node.
 - `_backwards`: A function that knows how to apply the chain rule to calculate the gradient rule if the parent gradient is known. 
 
@@ -162,8 +171,9 @@ class Value:
     ...
 ```
 
-Our auto grad engine needs to be able to dynamically construct the computational graph.
-So for example if we add two `Value` objects together, we want to create a new `Value` object that represents the sum of the two `Value` objects and a computational graph connection in the `children` attribute.
+Our auto-grad engine needs to be able to construct a computational graph dynamically. 
+So, for example, if we add two `Value` objects together, we want to create a new Value object that represents the sum of the two `Value` objects while keeping track of the underlying computational graph. 
+We can keep track of this connection by passing the previous `Value` objects used to construct this node via the `children` attribute. 
 We can do this by implementing the `__add__` method:
 
 ```python
@@ -181,12 +191,12 @@ class Value:
        )
    ...
 ```
-This `__add__` does the following:
-1. It calculates the data value for the new `Value` object by adding the data values of the two `Value` objects.
-1. Here we define how to calculate the gradient of `self` and `other` in the `_backward` function.
+This implementation of the `__add__` method does the following:
+- It calculates the data value for the new `Value` object by adding the data values of the two `Value` objects. 
+- Here we define how to calculate the gradient of `self` and `other` in the `_backward` function.
    This function takes as input the gradient of the parent node and calculates the gradient of the child nodes.
    This is the chain rule in action, exactly as we did manually in the previous section.
-1. It keeps track of the `children` of the new `Value` object. This is the computational graph connection.
+- It keeps track of the `children` of the new `Value` object. This is the computational graph connection.
 
 Now, we can do a single gradient calculation as follows:
 
@@ -200,8 +210,8 @@ assert x_1.grad == 1
 assert x_2.grad == 1
 ```
 
-At this point our `_backwards` function only works for a computation graph that is a single layer deep.
-So, let's extend our auto grad engine to support more complex computation graphs.
+At this point our `_backwards` function only works for a computational graph that is a single layer deep.
+So, let's extend our auto-grad engine to support more complex computational graphs.
 To do this, we need to implement the `backward` method.
 This will set the gradient of the root node to `1` and then recursively call the `_backwards` method on all the child nodes in reversed topological order.
 You might ask yourself why we need to do this in reversed topological order?
@@ -240,7 +250,7 @@ def find_reversed_topological_order(root: Value) -> list[Value]:
 ```
 
 In this implementation, we use a depth first search to find the reversed topological order.
-Now, we can do a gradient calculation on a deeper and more complex computation graph as follows:
+Now, with the `backwards` method implemented, we can do a gradient calculation on deeper and more complex computational graphs as follows:
 
 ```python
 x_1 = Value(1)
@@ -257,9 +267,10 @@ assert x_3.grad == 1
 assert x_4.grad == 1
 ```
 
-This is great it now works for arbitrary deep computation graphs.
+That is great!
+Our auto-grad engine now works for arbitrary deep computational graphs.
 Sadly, it only works with additions.
-So, let's extend our auto grad engine to support more operations.
+So, let's extend our auto-grad engine to support more operations.
 Let's start with multiplication:
 
 ```python
@@ -283,7 +294,7 @@ Notice that this looks very similar to the `__add__` method.
 The only differance is that we use the local differentiation rule for multiplication in the `_backward` function.
 Everything else is the same.
 
-Now, with the multiplication we can verify that our auto grad engine can solve the computation graph we solved manually in the previous section:
+Now, with the multiplication we can verify that our auto-grad engine can solve the computational graph we solved manually in the previous section:
 
 ```python
 x_1 = Value(3)
@@ -305,7 +316,7 @@ print(f"date={x_6.date} grad={x_6.grad}") # date=2 grad=17
 print(f"date={l.date} grad={l.grad}")     # date=34 grad=1
 ```
 
-Our auto grad engine now supports addition and multiplication.
+Our auto-grad engine now supports addition and multiplication.
 Of course there are many more operations that we can support, like subtraction, division, exponentiation, etc.
 However, I want to leave those as an exercise for the reader.
 To make this exercise a bit easier, I have created a [GitHub repository](https://github.com/j0rd1smit/mini_auto_grad) with the code we have written so far.
@@ -313,13 +324,15 @@ It also contains a [test suite](https://github.com/j0rd1smit/mini_auto_grad#exer
 
 ## Conclusion
 In this blog post, we delved into the backpropagation algorithm and how it can be used to calculate gradients in a computational graph.
-When then automated this process by implementing a mini auto grad engine.
-During this process, we learned that auto grad engines are not magic, but rather smart data structures that apply the chain rule automatically. 
-Despite this, they are incredibly useful for calculating gradients with ease.
+We then automated this process by implementing a mini auto-grad engine.
+During this process, we learned that auto-grad engines are not magic but rather smart data structures that apply the chain rule automatically.
+Despite this, they are handy for calculating gradients with ease.
 
-I hope this tutorial was helpful and that you were able to implement your own auto grad engine using the information provided.
+I hope this tutorial was helpful and that you were able to follow along and implement your own auto-grad engine.
+
 
 ## References
+1. [GitHub repository of my implementation](https://github.com/j0rd1smit/mini_auto_grad)
 1. [Backpropagation](https://en.wikipedia.org/wiki/Backpropagation)
-2. [micrograd from andrej karpathy](https://github.com/karpathy/micrograd)
+1. [Micrograd from andrej karpathy](https://github.com/karpathy/micrograd)
 
