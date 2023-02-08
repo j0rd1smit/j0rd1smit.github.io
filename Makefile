@@ -5,7 +5,7 @@ TIMESTAMP = $(shell date +'%Y-%m-%d')
 
 # Make a new blog post.
 blog:
-	echo "Enter name of TIL:"; \
+	echo "Enter name of blog:"; \
 	read name; \
 	name="blog/$(TIMESTAMP)-$$(echo $$name | tr ' ' '-')"; \
 	hugo new --kind post $$name
