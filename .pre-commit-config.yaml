@@ -14,11 +14,11 @@ repos:
   - id: destroyed-symlinks
   - id: fix-byte-order-marker
   - id: mixed-line-ending
-          #  - id: no-commit-to-branch
-          #    args: [--branch, main, --branch, dev]
+  - id: no-commit-to-branch
+    args: [--branch, main]
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.3.0
+  rev: v2.6.0
   hooks:
   - id: pretty-format-toml
     args: [--autofix]
