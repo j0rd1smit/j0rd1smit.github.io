@@ -1,0 +1,186 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=generator content="Hugo 0.110.0"><title>Adding Application Insight Based Monitoring to Fast API | J0rd1Smit</title><meta name=twitter:card content="summary"><meta name=twitter:title content="Adding Application Insight Based Monitoring to Fast API"><meta name=twitter:description content="Application Insights is Azure&rsquo;s logging and monitoring service, but how do you use it with Fast API? In this blog post, we will explore how to send logs and traces to Application Insights."><meta property="og:title" content="Adding Application Insight Based Monitoring to Fast API"><meta property="og:description" content="Application Insights is Azure&rsquo;s logging and monitoring service, but how do you use it with Fast API? In this blog post, we will explore how to send logs and traces to Application Insights."><meta property="og:type" content="article"><meta property="og:url" content="https://j0rd1smit.github.io/blog/adding-application-insight-based-monitoring-to-fast-api/"><meta property="article:section" content="blog"><meta property="article:published_time" content="2023-02-11T14:52:51+01:00"><meta property="article:modified_time" content="2023-02-11T14:52:51+01:00"><link rel=stylesheet href=https://j0rd1smit.github.io/css/bootstrap.min.60b19e5da6a9234ff9220668a5ec1125c157a268513256188ee80f2d2c8d8d36.css integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY="><link rel=stylesheet href=https://j0rd1smit.github.io/css/goolge-fonts.b251d02039bb76d3217f1bec88330f4bc1721d311854924a7217dcffe5bc80cb.css integrity="sha256-slHQIDm7dtMhfxvsiDMPS8FyHTEYVJJKchfc/+W8gMs="><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.0.13/css/all.css integrity=sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp crossorigin=anonymous><link rel=stylesheet href=https://j0rd1smit.github.io/css/medium.34da69acb5cb8e4275b44045c1ffd31648ac0f9f119c63ca72a121216a1be4c5.css integrity="sha256-NNpprLXLjkJ1tEBFwf/TFkisD58RnGPKcqEhIWob5MU="><link rel=stylesheet href=https://j0rd1smit.github.io/css/additional.4ef3d39c77b4a1adf1b5b6998bc22aa9fe2465cbbfbfdc12c2b7aa07dc13dd9d.css integrity="sha256-TvPTnHe0oa3xtbaZi8Iqqf4kZcu/v9wSwreqB9wT3Z0="></head><body class="d-flex flex-column min-vh-100"><nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down"><div class="container pr-0"><a class=navbar-brand href=https://j0rd1smit.github.io/><span style=font-family:Righteous>J0rd1Smit</span></a>
+<button class=navbar-toggler type=button data-toggle=collapse data-target=#navbarMediumish aria-controls=navbarSupportedContent aria-expanded=false aria-label="Toggle navigation">
+<span class=navbar-toggler-icon></span></button><div class="collapse navbar-collapse" id=navbarMediumish><ul class="navbar-nav ml-auto"><li class=nav-item><a class=nav-link href=/blog>Blog</a></li><li class=nav-item><a class=nav-link href=/til>TIL</a></li><li class=nav-item><a class=nav-link href=/cheat-sheets>Cheat-sheets</a></li><li class=nav-item><a class=nav-link href=/about>About Me</a></li></ul></div></div></nav><div class=site-content><div class=container><div class=mainheading><h1 class=sitetitle>J0rd1Smit</h1><p class=lead></p></div><div class=main-content><div class=container><div class=row><div class="col-md-2 pl-0"><div class="share sticky-top sticky-top-offset"><p>Share</p><ul><li class="ml-1 mr-1"><a target=_blank href="https://twitter.com/intent/tweet?text=Adding%20Application%20Insight%20Based%20Monitoring%20to%20Fast%20API&url=https%3a%2f%2fj0rd1smit.github.io%2fblog%2fadding-application-insight-based-monitoring-to-fast-api%2f" onclick='return window.open(this.href,"twitter-share","width=550,height=435"),!1'><i class="fab fa-twitter"></i></a></li><li class="ml-1 mr-1"><a target=_blank href="https://facebook.com/sharer.php?u=https%3a%2f%2fj0rd1smit.github.io%2fblog%2fadding-application-insight-based-monitoring-to-fast-api%2f" onclick='return window.open(this.href,"facebook-share","width=550,height=435"),!1'><i class="fab fa-facebook-f"></i></a></li><li class="ml-1 mr-1"><a target=_blank href="https://www.linkedin.com/sharing/share-offsite/?url=https%3a%2f%2fj0rd1smit.github.io%2fblog%2fadding-application-insight-based-monitoring-to-fast-api%2f" onclick='return window.open(this.href,"linkedin-share","width=550,height=435"),!1'><i class="fab fa-linkedin"></i></a></li></ul></div></div><div class="col-md-9 flex-first flex-md-unordered"><div class=mainheading><div class="row post-top-meta"><div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0 md-nopad-right"><a href=/about><img class=author-thumb src=https://j0rd1smit.github.io/media/images/author_hu25d333fcded103db2f52f7476cb1420a_204682_250x0_resize_q75_box.jpg alt=Author></a></div><div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left md-nopad-left"><a href=/about class=link-dark>Jordi
+Smit</a><br><span class=author-description>Machine Learning Engineer<br>Feb 11, 2023
+<i class="far fa-clock clock"></i>
+7 min read</span></div></div><h1 class=posttitle>Adding Application Insight Based Monitoring to Fast API</h1></div><div class=post-featured-image><img class=img-fluid src=https://j0rd1smit.github.io/blog/adding-application-insight-based-monitoring-to-fast-api/images/cover.jpg alt="thumbnail for this post"></div><div class=article-post><p>Application Insights is Azure&rsquo;s logging and monitoring service, but how do you use it with Fast API?
+In this blog post, we will explore how to send logs and traces to Application Insights.
+Finally, we will show you how to integrate this into your Fast API application using custom Middleware.
+Join us while we explore how to implement this using the opencensus library.</p><h2 id=how-to-use-the-opencensus-library>How to use the opencensus library</h2><p>In this blog post, we will use the <a href=https://census-instrumentation.github.io/opencensus-python/trace/usage.html>opencensus</a> library to send logs to Application Insights.
+The opencensus library is the swiss army knife for monitoring, and it contains many exporters for a wide variety of monitoring services.
+And as luck would have it, it also contains an exporter for Application Insights.</p><p>In Fast API applications, you typically have two types of logs. The first type of log is a regular log event.
+A typical example of this type is when a system starts up, the occurrence of an exception, etc.
+The second type is a request log. Request logs differ from regular logs since they have a response duration and a success status.
+Before adding both approaches to our Fast API application, let’s first explore how to use opencensus to send both types of logs to Application Insights.</p><h3 id=how-to-send-regular-logs-to-application-insights>How to send regular logs to Application Insights</h3><p>Python has a build in logging library for logging events.
+By default, this logging library sends its logs to the console, but you can easily configure it to send its logs to another location.
+All you need to do is add a different handler to your logger.
+In our case, <code>opencensus</code> has already implemented such a handler for Application Insights. So all we need to do is add an <code>AzureLogHandler</code> to our logger.
+This handler does need a <code>InstrumentationKey</code>, which is Application Insight&rsquo;s version of an API key. You can obtain your <code>InstrumentationKey</code> by going to your Application Insights resource in the Azure portal.
+You can find it on the main page of your resource under essentials.
+Once you have the connection string, you can add the <code>AzureLogHandler</code> to your logger as follows:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.ext.azure.log_exporter <span style=color:#f92672>import</span> AzureLogHandler
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Configure basic logging</span>
+</span></span><span style=display:flex><span>logging<span style=color:#f92672>.</span>basicConfig(format<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>%(message)s</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger(__name__)
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>setLevel(logging<span style=color:#f92672>.</span>INFO)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Get instrumentation key from environment variable.</span>
+</span></span><span style=display:flex><span>instrumentation_key <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;INSTRUMENTATION_KEY&#34;</span>]
+</span></span><span style=display:flex><span><span style=color:#75715e># add Azure (Application Insight) log handler to the logger</span>
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>addHandler(
+</span></span><span style=display:flex><span>    AzureLogHandler(connection_string<span style=color:#f92672>=</span><span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;InstrumentationKey=</span><span style=color:#e6db74>{</span>instrumentation_key<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span><span style=color:#75715e># Log a simple message</span>
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;hello world&#34;</span>)
+</span></span></code></pre></div><p>After running the above code, all your logs will be sent to Application Insights.
+To find them, you must first go to the Application Insights resource in the Azure portal.
+Then, you must click on the <code>Logs</code> tab.</p><figure><img src=images/how_to_find_logs.jpg alt="Click on the logs button."><figcaption><p>Click on the logs button.</p></figcaption></figure><p>Finally, click on the <code>traces</code> submenu to see your logs:<figure><img src=images/how_to_find_traces.jpg alt="Click on the traces button in the left menu."><figcaption><p>Click on the traces button in the left menu.</p></figcaption></figure></p><p>Another nice feature of the <code>AzureLogHandler</code> is that it also supports logging custom properties.
+All you need to do is add a dictionary with data to the <code>extra</code> parameter when you log a message.
+This feature is helpful if you want to include additional information, such as the current deployment name, the deployed version, etc.
+For example:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#75715e># Define custom properties for the log message</span>
+</span></span><span style=display:flex><span>properties <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;custom_dimensions&#34;</span>: {<span style=color:#e6db74>&#34;key_1&#34;</span>: <span style=color:#e6db74>&#34;some value&#34;</span>, <span style=color:#e6db74>&#34;key_n&#34;</span>: <span style=color:#e6db74>&#34;something else&#34;</span>}
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#75715e># Log a message with custom properties</span>
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>&#34;hello world&#34;</span>, extra<span style=color:#f92672>=</span>properties)
+</span></span></code></pre></div><p>After running the above code, you will see the custom properties are logged in the <code>customDimensions</code> field of the log:</p><figure><img src=images/log_event_result.jpeg alt="The resulting log in Application Insights."><figcaption><p>The resulting log in Application Insights.</p></figcaption></figure><h3 id=how-to-send-request-traces-to-application-insights>How to send request traces to Application Insights</h3><p>In web applications, we are also interested in which endpoints are called, their response code. and how long they needed to process a request.
+In theory, you could implement this yourself using try-catch blocks, the <code>time</code> library and the <code>extra</code> parameter of the <code>logger</code> class.
+However, this is a lot of work and error-prone if you have to do this often.
+Luckily, the <code>opencensus</code> library has a <code>Tracer</code> class that can all of this for you.
+It works as follows:</p><ol><li>You receive a request.</li><li>You create a <code>Tracer</code> and a <code>Span</code>.</li><li>You store all the metadata of the request the <code>Span</code> like the name of the endpoint, the response code, etc.</li><li>You start the <code>Span</code>.</li><li>You handle the request.</li><li>You store the response code in the <code>Span</code>.</li><li>You end the <code>Span</code>.</li><li>You send the response.</li></ol><p>After you have done this, the <code>Tracer</code> will send the <code>Span</code> as a log to Application Insights with the duration and all other metadata as properties.
+Setting this up requires a bit more boilerplate code than logging an event, but it is still far less than doing this all from scratch:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> random
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> time
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.ext.azure.trace_exporter <span style=color:#f92672>import</span> AzureExporter
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.trace.samplers <span style=color:#f92672>import</span> ProbabilitySampler
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.trace.span <span style=color:#f92672>import</span> SpanKind
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.trace.tracer <span style=color:#f92672>import</span> Tracer
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># setup</span>
+</span></span><span style=display:flex><span>sample_probability <span style=color:#f92672>=</span> <span style=color:#ae81ff>1.0</span>
+</span></span><span style=display:flex><span>instrumentation_key <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;INSTRUMENTATION_KEY&#34;</span>]
+</span></span><span style=display:flex><span>connection_string <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;InstrumentationKey=</span><span style=color:#e6db74>{</span>instrumentation_key<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># The AzureExporter sends the logs to Application Insights</span>
+</span></span><span style=display:flex><span>exporter <span style=color:#f92672>=</span> AzureExporter(connection_string<span style=color:#f92672>=</span>connection_string)
+</span></span><span style=display:flex><span><span style=color:#75715e># The tracer is responsible for tracking the durations and metadata of the events</span>
+</span></span><span style=display:flex><span>tracer <span style=color:#f92672>=</span> Tracer(sampler<span style=color:#f92672>=</span>ProbabilitySampler(sample_probability), exporter<span style=color:#f92672>=</span>exporter)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># start the measurement</span>
+</span></span><span style=display:flex><span>span <span style=color:#f92672>=</span> tracer<span style=color:#f92672>.</span>start_span(<span style=color:#e6db74>&#34;your_log_name&#34;</span>)
+</span></span><span style=display:flex><span>span<span style=color:#f92672>.</span>span_kind <span style=color:#f92672>=</span> SpanKind<span style=color:#f92672>.</span>SERVER <span style=color:#75715e># This tell Application Insights that this is a request log</span>
+</span></span><span style=display:flex><span>span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;some_extra_data&#34;</span>, <span style=color:#e6db74>&#34;some_value&#34;</span>) <span style=color:#75715e># Add additional data like the extra properties of a regular log</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># do something...</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># We add a bit of randomness to have some variation in the duration of the event</span>
+</span></span><span style=display:flex><span>time<span style=color:#f92672>.</span>sleep(random<span style=color:#f92672>.</span>uniform(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># add additional data</span>
+</span></span><span style=display:flex><span>span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;some_extra_data&#34;</span>, <span style=color:#e6db74>&#34;after_run_data&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># end the measurement</span>
+</span></span><span style=display:flex><span>tracer<span style=color:#f92672>.</span>end_span()
+</span></span><span style=display:flex><span>tracer<span style=color:#f92672>.</span>finish()
+</span></span></code></pre></div><p>After running the above code a few times, you will see the following types of logs in Application Insights.
+You see that Application Insights has automatically added the duration of the event and its performance bucket as properties.</p><figure><img src=images/log_duration.jpg alt="The resulting logs in Application Insights. You can find them under requests."><figcaption><p>The resulting logs in Application Insights. You can find them under requests.</p></figcaption></figure><h2 id=putting-it-all-together>Putting it all together</h2><p>We know how to log events and traces to Application Insights, lets add them to our FastAPI application.
+Sending our regular logs to Application Insights is relatively straightforward.
+All we need to do is add an <code>AzureLogHandler</code> to our logger.
+Adding the request traces is a bit more complicated, but we can do it using custom middleware.
+This middleware will be called for every request and will start a <code>Span</code> before the request is handled and end the <code>Span</code> just before the response is sent.
+Using this approach, we get the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> logging
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> os
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> random
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> time
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> traceback
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> typing <span style=color:#f92672>import</span> Awaitable, Callable
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> fastapi <span style=color:#f92672>import</span> FastAPI, Request, Response
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.ext.azure.log_exporter <span style=color:#f92672>import</span> AzureLogHandler
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.ext.azure.trace_exporter <span style=color:#f92672>import</span> AzureExporter
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.trace.samplers <span style=color:#f92672>import</span> AlwaysOnSampler
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.trace.span <span style=color:#f92672>import</span> SpanKind
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> opencensus.trace.tracer <span style=color:#f92672>import</span> Tracer
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> starlette.responses <span style=color:#f92672>import</span> StreamingResponse
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Setup the event logger</span>
+</span></span><span style=display:flex><span>logging<span style=color:#f92672>.</span>basicConfig(format<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>%(message)s</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>logger <span style=color:#f92672>=</span> logging<span style=color:#f92672>.</span>getLogger(__name__)
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>setLevel(logging<span style=color:#f92672>.</span>INFO)
+</span></span><span style=display:flex><span>instrumentation_key <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;INSTRUMENTATION_KEY&#34;</span>]
+</span></span><span style=display:flex><span>connection_string <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;InstrumentationKey=</span><span style=color:#e6db74>{</span>instrumentation_key<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>logger<span style=color:#f92672>.</span>addHandler(AzureLogHandler(connection_string<span style=color:#f92672>=</span>connection_string))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Implement the custom middleware responsible for logging the request traces</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TracingMiddleware</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> __init__(self) <span style=color:#f92672>-&gt;</span> <span style=color:#66d9ef>None</span>:
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>sampler <span style=color:#f92672>=</span> AlwaysOnSampler()
+</span></span><span style=display:flex><span>        instrumentation_key <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#34;INSTRUMENTATION_KEY&#34;</span>]
+</span></span><span style=display:flex><span>        connection_string <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;InstrumentationKey=</span><span style=color:#e6db74>{</span>instrumentation_key<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>        self<span style=color:#f92672>.</span>exporter <span style=color:#f92672>=</span> AzureExporter(connection_string<span style=color:#f92672>=</span>connection_string)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>async</span> <span style=color:#66d9ef>def</span> __call__(
+</span></span><span style=display:flex><span>            self,
+</span></span><span style=display:flex><span>            request: Request,
+</span></span><span style=display:flex><span>            call_next: Callable[[Request], Awaitable[StreamingResponse]],
+</span></span><span style=display:flex><span>    ) <span style=color:#f92672>-&gt;</span> Response:
+</span></span><span style=display:flex><span>        tracer <span style=color:#f92672>=</span> Tracer(exporter<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>exporter, sampler<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>sampler)
+</span></span><span style=display:flex><span>        <span style=color:#75715e># create span</span>
+</span></span><span style=display:flex><span>        span <span style=color:#f92672>=</span> tracer<span style=color:#f92672>.</span>start_span(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;[</span><span style=color:#e6db74>{</span>request<span style=color:#f92672>.</span>method<span style=color:#e6db74>}</span><span style=color:#e6db74>]</span><span style=color:#e6db74>{</span>request<span style=color:#f92672>.</span>method<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#75715e># This tells Azure&#39;s application insight that this log is a request.</span>
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>span_kind <span style=color:#f92672>=</span> SpanKind<span style=color:#f92672>.</span>SERVER
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Add Default url information.</span>
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.host&#34;</span>, request<span style=color:#f92672>.</span>url<span style=color:#f92672>.</span>hostname)
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.method&#34;</span>, request<span style=color:#f92672>.</span>method)
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.path&#34;</span>, request<span style=color:#f92672>.</span>url<span style=color:#f92672>.</span>path)
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.url&#34;</span>, str(request<span style=color:#f92672>.</span>url))
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.rout&#34;</span>, request<span style=color:#f92672>.</span>url<span style=color:#f92672>.</span>path)
+</span></span><span style=display:flex><span>        <span style=color:#75715e># Add application specific information.</span>
+</span></span><span style=display:flex><span>        span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;deployment_name&#34;</span>, os<span style=color:#f92672>.</span>environ<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;deployment_name&#34;</span>, <span style=color:#e6db74>&#34;&#34;</span>))
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>            response <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> call_next(request)
+</span></span><span style=display:flex><span>            span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.status_code&#34;</span>, response<span style=color:#f92672>.</span>status_code)
+</span></span><span style=display:flex><span>            tracer<span style=color:#f92672>.</span>end_span()
+</span></span><span style=display:flex><span>            tracer<span style=color:#f92672>.</span>finish()
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> response
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>            <span style=color:#75715e># Add exception info to the log.</span>
+</span></span><span style=display:flex><span>            span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;error.name&#34;</span>, e<span style=color:#f92672>.</span>__class__<span style=color:#f92672>.</span>__name__)
+</span></span><span style=display:flex><span>            span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;error.message&#34;</span>, str(e))
+</span></span><span style=display:flex><span>            span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;stacktrace&#34;</span>, <span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>join(traceback<span style=color:#f92672>.</span>format_tb(e<span style=color:#f92672>.</span>__traceback__)))
+</span></span><span style=display:flex><span>            span<span style=color:#f92672>.</span>add_attribute(<span style=color:#e6db74>&#34;http.status_code&#34;</span>, <span style=color:#ae81ff>500</span>)
+</span></span><span style=display:flex><span>            tracer<span style=color:#f92672>.</span>end_span()
+</span></span><span style=display:flex><span>            tracer<span style=color:#f92672>.</span>finish()
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>raise</span> e
+</span></span><span style=display:flex><span>            
+</span></span><span style=display:flex><span><span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>    app <span style=color:#f92672>=</span> FastAPI()
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Add the tracing middleware</span>
+</span></span><span style=display:flex><span>    app<span style=color:#f92672>.</span>middleware(<span style=color:#e6db74>&#34;http&#34;</span>)(TracingMiddleware())
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>@app.get</span>(<span style=color:#e6db74>&#34;/&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>index</span>():
+</span></span><span style=display:flex><span>        time<span style=color:#f92672>.</span>sleep(random<span style=color:#f92672>.</span>uniform(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>))
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> {<span style=color:#e6db74>&#34;hello&#34;</span>: <span style=color:#e6db74>&#34;world&#34;</span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>info(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Server is ready&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Exception=</span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>raise</span> e
+</span></span></code></pre></div><h2 id=create-a-dashboard>Create a dashboard</h2><p>That&rsquo;s it, we now have a FastAPI application that logs events and traces to Application Insights.
+Now the fun parts starts, we can create a dashboard that shows us the performance of our application.
+Application Insights has a query language called KQL makes it realively easy to query your logs.
+A feature that I really like is that KQL can also make visualizations, making it very easy to create dashboards.
+All you need to do is click on the visualization button in the query editor.
+For example, it can generate a graph that shows the average duration of the requests.</p><p><figure><img src=images/avg_duration.jpg alt="A KQL query to visualize the average duration."><figcaption><p>A KQL query to visualize the average duration.</p></figcaption></figure>Or it can generate a graph that shows the number of requests in a certain time frame.</p><figure><img src=images/number_of_request.jpg alt="The resulting log in Application Insights."><figcaption><p>The resulting log in Application Insights.</p></figcaption></figure><h2 id=conclusion>Conclusion</h2><p>That&rsquo;s it, we now have a FastAPI application that logs events and traces to Application Insights.
+When I first did this, I was confused by the documentation and the lack of examples.
+So, I hope this post will make it easier for you to start with Application Insight-based monitoring.
+If some things are still unclear, feel free to reach out.</p></div><div class=after-post-tags><ul class=tags></ul></div><div class="row PageNavigation d-flex justify-content-between font-weight-bold"><a class="d-block col-md-6 text-lg-right" href=https://j0rd1smit.github.io/blog/diy-auto-grad-engine-a-step-by-step-guide-to-calculating-derivatives-automatically/>DIY auto-grad Engine: A Step-by-Step Guide to Calculating Derivatives Automatically &#187;</a><div class=clearfix></div></div></div></div></div></div></div></div><footer class="footer mt-auto"><div class=container><div class=row><div class="col-md-12 col-sm-612 text-center">&copy; Copyright
+Jordi Smit - All rights reserved</div></div></div></footer><script src=https://j0rd1smit.github.io/js/jquery-3.6.1.min.131c0d82967fed05e1920e519e0ea6ec91ab97b7c40480f72f8af8680bba1f0a.js integrity="sha256-ExwNgpZ/7QXhkg5Rng6m7JGrl7fEBID3L4r4aAu6Hwo="></script>
+<script src=https://j0rd1smit.github.io/js/popper.min.549cf842cba3739e48efdb4fb6c06405d0e14a02e274538dcd9eed23f49b9e98.js integrity="sha256-VJz4Qsujc55I79tPtsBkBdDhSgLidFONzZ7tI/Sbnpg="></script>
+<script src=https://j0rd1smit.github.io/js/bootstrap.min.0a34a87842c539c1f4feec56bba982fd596b73500046a6e6fe38a22260c6577b.js integrity="sha256-CjSoeELFOcH0/uxWu6mC/Vlrc1AARqbm/jiiImDGV3s="></script>
+<script src=https://j0rd1smit.github.io/js/mediumish.d6fc184863fad23419eee1ce39d87152fb7f8a1c2444f5da3d16b5efa375e389.js integrity="sha256-1vwYSGP60jQZ7uHOOdhxUvt/ihwkRPXaPRa176N144k="></script></body></html>
