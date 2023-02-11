@@ -1,52 +1,52 @@
 baseURL = 'https://j0rd1smit.github.io'
-languageCode = 'en-us'
-title = 'J0rd1Smit'
 copyright = "Jordi Smit - All rights reserved"
+languageCode = 'en-us'
 summaryLength = 20
+title = 'J0rd1Smit'
 
 [[menu.main]]
-name = "Blog"
-weight = 100
 identifier = "Blog"
+name = "Blog"
 url = "/blog"
+weight = 100
 
 [[menu.main]]
-name = "TIL"
 identifier = "til"
-weight = 200
+name = "TIL"
 url = "/til"
+weight = 200
 
 [[menu.main]]
-name = "Cheat-sheets"
 identifier = "cheat-sheets"
-weight = 300
+name = "Cheat-sheets"
 url = "/cheat-sheets"
+weight = 300
 
 [[menu.main]]
-name = "About Me"
 identifier = "about"
-weight = 400
+name = "About Me"
 url = "/about"
+weight = 400
 
 [params]
 
 [params.author]
 firstName = 'Jordi'
-lastName = 'Smit'
 jobTitle = 'Machine Learning Engineer'
+lastName = 'Smit'
 thumbnail = "media/images/author.jpg"
 
 [params.index]
 picture = "/images/author.jpg"
-title = "Jordi Smit"
 subtitle = "Machine Learning Engineer"
+title = "Jordi Smit"
 
 [params.social]
-twitter = "j0rd1smit"
 github = "j0rd1smit"
 linkedin = "👋jordi-smit-8778b51b4"
+twitter = "j0rd1smit"
 
 [permalinks]
 blog = '/blog/:title'
-til = '/til/:title'
 cheat-sheets = '/cheat-sheets/:title'
+til = '/til/:title'
