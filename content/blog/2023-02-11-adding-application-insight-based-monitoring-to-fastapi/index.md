@@ -18,7 +18,6 @@ Join us while we explore how to implement this using the opencensus library.
 In this blog post, we will use the [opencensus](https://census-instrumentation.github.io/opencensus-python/trace/usage.html) library to send logs to Application Insights. 
 The opencensus library is the swiss army knife for monitoring, and it contains many exporters for a wide variety of monitoring services. 
 And as luck would have it, it also contains an exporter for Application Insights.
-
 In Fast API applications, you typically have two types of logs. The first type of log is a regular log event.
 A typical example of this type is when a system starts up, the occurrence of an exception, etc. 
 The second type is a request log. Request logs differ from regular logs since they have a response duration and a success status.
@@ -234,18 +233,6 @@ except Exception as e:
     raise e
 ```
 
-## Create a dashboard
-That's it, we now have a FastAPI application that logs events and traces to Application Insights.
-Now the fun parts starts, we can create a dashboard that shows us the performance of our application.
-Application Insights has a query language called KQL makes it realively easy to query your logs.
-A feature that I really like is that KQL can also make visualizations, making it very easy to create dashboards.
-All you need to do is click on the visualization button in the query editor.
-For example, it can generate a graph that shows the average duration of the requests.
-
-{{< figure src="images/avg_duration.jpg" caption="A KQL query to visualize the average duration." >}}
-Or it can generate a graph that shows the number of requests in a certain time frame.
-
-{{< figure src="images/number_of_request.jpg" caption="The resulting log in Application Insights." >}}
 
 ## Conclusion
 That's it, we now have a FastAPI application that logs events and traces to Application Insights.
