@@ -8,7 +8,8 @@ In this blog post, we will explore how to send logs and traces to Application In
 Finally, we will show you how to integrate this into your Fast API application using custom Middleware.
 Join us while we explore how to implement this using the opencensus library.</p><h2 id=how-to-use-the-opencensus-library>How to use the opencensus library</h2><p>In this blog post, we will use the <a href=https://census-instrumentation.github.io/opencensus-python/trace/usage.html>opencensus</a> library to send logs to Application Insights.
 The opencensus library is the swiss army knife for monitoring, and it contains many exporters for a wide variety of monitoring services.
-And as luck would have it, it also contains an exporter for Application Insights.</p><p>In Fast API applications, you typically have two types of logs. The first type of log is a regular log event.
+And as luck would have it, it also contains an exporter for Application Insights.
+In Fast API applications, you typically have two types of logs. The first type of log is a regular log event.
 A typical example of this type is when a system starts up, the occurrence of an exception, etc.
 The second type is a request log. Request logs differ from regular logs since they have a response duration and a success status.
 Before adding both approaches to our Fast API application, let’s first explore how to use opencensus to send both types of logs to Application Insights.</p><h3 id=how-to-send-regular-logs-to-application-insights>How to send regular logs to Application Insights</h3><p>Python has a build in logging library for logging events.
@@ -171,12 +172,7 @@ Using this approach, we get the following:</p><div class=highlight><pre tabindex
 </span></span><span style=display:flex><span><span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
 </span></span><span style=display:flex><span>    logger<span style=color:#f92672>.</span>exception(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Exception=</span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>raise</span> e
-</span></span></code></pre></div><h2 id=create-a-dashboard>Create a dashboard</h2><p>That&rsquo;s it, we now have a FastAPI application that logs events and traces to Application Insights.
-Now the fun parts starts, we can create a dashboard that shows us the performance of our application.
-Application Insights has a query language called KQL makes it realively easy to query your logs.
-A feature that I really like is that KQL can also make visualizations, making it very easy to create dashboards.
-All you need to do is click on the visualization button in the query editor.
-For example, it can generate a graph that shows the average duration of the requests.</p><p><figure><img src=images/avg_duration.jpg alt="A KQL query to visualize the average duration."><figcaption><p>A KQL query to visualize the average duration.</p></figcaption></figure>Or it can generate a graph that shows the number of requests in a certain time frame.</p><figure><img src=images/number_of_request.jpg alt="The resulting log in Application Insights."><figcaption><p>The resulting log in Application Insights.</p></figcaption></figure><h2 id=conclusion>Conclusion</h2><p>That&rsquo;s it, we now have a FastAPI application that logs events and traces to Application Insights.
+</span></span></code></pre></div><h2 id=conclusion>Conclusion</h2><p>That&rsquo;s it, we now have a FastAPI application that logs events and traces to Application Insights.
 When I first did this, I was confused by the documentation and the lack of examples.
 So, I hope this post will make it easier for you to start with Application Insight-based monitoring.
 If some things are still unclear, feel free to reach out.</p></div><div class=after-post-tags><ul class=tags></ul></div><div class="row PageNavigation d-flex justify-content-between font-weight-bold"><a class="d-block col-md-6 text-lg-right" href=https://j0rd1smit.github.io/blog/diy-auto-grad-engine-a-step-by-step-guide-to-calculating-derivatives-automatically/>DIY auto-grad Engine: A Step-by-Step Guide to Calculating Derivatives Automatically &#187;</a><div class=clearfix></div></div></div></div></div></div></div></div><footer class="footer mt-auto"><div class=container><div class=row><div class="col-md-12 col-sm-612 text-center">&copy; Copyright
