@@ -20,3 +20,6 @@ til:
 # Start a local dev server.
 dev:
 	hugo -D server
+
+build:
+	hugo --minify
