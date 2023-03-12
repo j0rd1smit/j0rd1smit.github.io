@@ -38,9 +38,9 @@ def url(request: pytest.FixtureRequest) -> Optional[str]:
         pytest.skip()
     return url_value
 ```
+
 In this code snippet, I used the `pytest_addoption` function in the top-level `conftest.py` file to add the `--url` parameter to the `pytest` CLI.
 Now, the optional value of the url parameter becomes available in the `pytest.FixtureRequest` config options, which means we can expose it as a PyTest fixture.
-
 
 What I really like about this solution is that works with both the `pytest --url SOME_URL` and `pytest` command.
 This works because if the `url` parameter is not defined, all test cases that depend on the `url` fixture will be skipped due to the `pytest.skip()`.

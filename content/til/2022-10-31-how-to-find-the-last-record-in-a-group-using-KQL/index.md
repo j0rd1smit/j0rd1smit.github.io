@@ -19,14 +19,15 @@ Today, I was building a dashboard in Azure's [Application Insight](https://learn
 All the deployments in this application are periodically queried for the current health status via a health REST API call.
 Each application logs its unique deployment ID and load balancer ID during this health request to Azure's Application insights.
 So to create this dashboard, I had to do the following:
+
 1. Group all the health requests in a given interval by their deployment ID, load balancer ID, and interval and take the last record in this group.
 2. Group all the remaining records by their load balancer ID and count the number of deployments.
 3. Create a plot that shows the total number of deployments per load balancer over time.
 
-Today I learned that you could implement step 1 using the [arg max](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/arg-max-aggfunction) function in Azure's Application Insight querying language (KQL). 
-The `arg_max(x, y)  by z1, ..., zn` function finds the record with the largest value for `x` in group `z_i` and then returns the columns `y`. 
-In our case, we can use `summarize arg_max(timestamp, *) by endpoint, deployment, bin(timestamp, 5m)` to find the record with the largest timestamp in our endpoint, deployment, and interval group. 
-In this case, we use `*` to indicate that the `arg_max` function should return all the columns of the selected record. 
+Today I learned that you could implement step 1 using the [arg max](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/arg-max-aggfunction) function in Azure's Application Insight querying language (KQL).
+The `arg_max(x, y)  by z1, ..., zn` function finds the record with the largest value for `x` in group `z_i` and then returns the columns `y`.
+In our case, we can use `summarize arg_max(timestamp, *) by endpoint, deployment, bin(timestamp, 5m)` to find the record with the largest timestamp in our endpoint, deployment, and interval group.
+In this case, we use `*` to indicate that the `arg_max` function should return all the columns of the selected record.
 So, with this new insight, we can get the data for our dashboard using the following KQL query.
 
 ```kql
