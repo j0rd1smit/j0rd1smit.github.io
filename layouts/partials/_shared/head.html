@@ -44,6 +44,10 @@
       <meta property="og:image" content="{{ .Permalink }}" />
       <meta property="og:image:secure_url" content="{{ .Permalink }}" />
     {{ end }}
+  {{ else }}
+    {{ $authorImg := resources.Get .Site.Params.author.thumbnail }}
+    <meta property="og:image" content="{{ $authorImg.Permalink }}" />
+    <meta property="og:image:secure_url" content="{{ $authorImg.Permalink }}" />
   {{ end }}
   <meta property="og:type" content="website" />
 
