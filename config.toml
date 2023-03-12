@@ -1,9 +1,10 @@
 baseURL = 'https://jordismit.com'
 copyright = "Jordi Smit - All rights reserved"
 enableRobotsTXT = true
+image = 'images/author.jpg'
 languageCode = 'en-us'
 summaryLength = 20
-title = 'J0rd1Smit'
+title = 'Jordi Smit'
 
 [[menu.main]]
 identifier = "Blog"
@@ -30,6 +31,8 @@ url = "/about"
 weight = 400
 
 [params]
+description = "A Machine Learning Engineer's blog"
+tags = ["Machine leanring", "Jordi Smit", "j0rd1smit", "Machine Learning engineer", "Data Science", "deep learning"]
 
 [params.author]
 firstName = 'Jordi'

@@ -1,8 +1,11 @@
 ---
 title: "Python Dataclass From Scratch"
+description: "Want to understand the magic behind data classes? Learn how to create them from scratch using Python's exec function."
 date: 2022-11-05T10:51:16+01:00
 publishdate: 2022-11-06T10:51:16+01:00
-tags: []
+tags:
+- python
+- code generation
 draft: false
 math: false
 image: "/cover.png"
@@ -16,12 +19,12 @@ I have been using data classes for years and often tell people about them.
 However, recently I showed it to someone new to Python, and they asked how this works under the hood.
 To be honest, at that moment, I also had no idea, but I decided to find out by implementing a data class from scratch.
 
-
-
 ## Python's exec function
+
 After doing some research, I discovered Python has the [exec](https://docs.python.org/3/library/functions.html#exec) function.
 This function takes a string with valid python code as input and compiles it into runnable python code at runtime.
 For example, we can do the following using the `exec` function:
+
 ```python
 code = """
 def hello_world():
@@ -31,6 +34,7 @@ scope = {}
 exec(code, globals=scope)
 scope["hello_world"]()
 ```
+
 In this example, we write the `hello_world` function in a string.
 We then give this string and a scope dictionary as input to the `exec` function.
 The `exec` function then executes the python code in the string.
@@ -40,9 +44,8 @@ The cool thing about this is that the provided string can be dynamically generat
 Thus this feature can enable us to do incredible things that might not be possible in other languages. However, with this great power also comes great responsibility. (Thanks, Uncle Ben). Whenever you use the `exec` function, be aware that this might enable someone to run arbitrary code. So always be very careful with this and think about the potential security implementation of this.
 Anyway, let's keep this in mind why we will use the `exec` function to implement our version of a data class.
 
-
-
 ## Generating a init function
+
 Before we implement our custom `generate_init` function, let's first look at the behavior of `dataclasses.dataclass`.
 When we define a dataclass using `@dataclasses.dataclass` it generates the following `__init__` function:
 
@@ -99,7 +102,6 @@ However, how do we tell Python that this `__init__` function belongs to this spe
 An amazing feature of Python is that you can overwrite any class method at any time, including after the creation of the class, using the `setattr` function.
 So, we can add the `__init__` method to our `Point` class as follows:
 
-
 ```python
 # create the init function
 init_code_as_string = generate_init(Point)
@@ -114,9 +116,11 @@ p2 = Point(1, 2, 3)
 ```
 
 ## Generating a repr function
+
 Another thing `dataclasses.dataclass` does is that it generates a `__repr__` function.
 This function ensures that if your print your data class, the output looks exactly as if you were creating a new instance of your data class.
 So if we want to generate such as function, we need the following:
+
 1. We need to know the input order of the arguments in the `__init__` function.
 1. We need to know the attribute names.
 
@@ -125,7 +129,6 @@ However, this assumption might not hold in the real world since someone could de
 In that case, you could do something [inspect.getfullargspec](https://docs.python.org/3/library/inspect.html#inspect.getfullargspec) or [hasattr](https://docs.python.org/3/library/functions.html#hasattr) but this will make our code much more complicated.
 So for now, let's consider that out of scope, and let's assume that we are the one that constructs the `__init__` function using our `generate_init`.
 In this situation, we could implement the `generate_repr` function as follows:
-
 
 ```python
 
@@ -141,13 +144,12 @@ def __repr__(self) -> str:
     return code
 ```
 
-
 ## Putting it all together
+
 The last thing we need to do is to make our new data class functionality easy to use.
 We can do this by creating a decorator function that dynamically adds the `__init__` and `__repr__` to a class definition.
 In Python, you can create a class decorator by creating a function that takes as input a class type and return a (new) class type.
 We can implement this as follows:
-
 
 ```python
 from typing import Any, Type, TypeVar
@@ -170,7 +172,9 @@ def dataclass(cls: Type[T]) -> Type[T]:
 
     return cls
 ```
+
 Now we have a minimal working implementation of a dataclass. We can use it is follows:
+
 ```python
 @dataclass
 class Point:
@@ -184,12 +188,10 @@ print(Point(1, 1, 1)) # >>> Point(x=1, y=1, z=1)
 ```
 
 ## Final thoughts
+
 Implementing a data class from scratch was a fun experience, which opened my eyes to the power of dynamic code generation in Python.
 This was one example of what you can do with dynamic code generation, but you can take it much further.
 For example, the [dataclass](https://docs.python.org/3/library/dataclasses.html) can optionally implement much more functionality such as `__eq__`, `__hash__`, `__lt__`, and more.
 Adding this functionality could also be a fun challenge.
 Another option could be to add type validation logic based on the `__annotations__`, which would produce functionality similar to that of [Pydantic](https://pydantic-docs.helpmanual.io/).
 And yet another option could be the [FastAPI](https://fastapi.tiangolo.com/) route whereby you use `__annotations__` as additional information for your framework functions.
-
-
-
