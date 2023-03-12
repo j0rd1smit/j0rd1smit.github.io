@@ -1,11 +1,17 @@
 ---
 title: "Adding Application Insight Based Monitoring to Fast API"
+description: "Learn how to add application insights-based monitoring to your FastAPI project using opencensus. All you need is custom middleware and a tracer."
 date: 2023-02-11T14:52:51+01:00
 publishdate: 2023-02-11T14:52:51+01:00
-tags: []
+tags:
+- python
+- application insight
+- fast api
+- monitoring
+- azure
 draft: false
 math: false
-image: "/cover.png"
+image: "cover.jpg"
 use_featured_image: true
 featured_image_size: 600x
 ---

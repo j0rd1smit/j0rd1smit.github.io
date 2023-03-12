@@ -1,14 +1,19 @@
 ---
 title: "How to pass data to PyTest fixtures from the CLI"
+description: "Today I learned how to pass different URLs via the CLI to PyTest fixtures to make my test reusable on different API deployments."
 date: 2022-06-29T21:45:20+02:00
 publishdate: 2022-06-29T21:45:20+02:00
-tags: []
+tags:
+- python
+- pytest
+- testing
 image: "/cover.png"
 draft: false
 math: false
 use_featured_image: true
 featured_image_size: 600x
 ---
+
 A short while ago, I needed to create some high-level smoke tests that tested whether an API I deployed was working as intended.
 The test cases were relatively straightforward to write.
 However, the tricky part was that I wanted to use these test cases for both my stage and production deployment, which of course, have different URLs.

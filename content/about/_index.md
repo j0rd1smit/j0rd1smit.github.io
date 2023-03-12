@@ -2,11 +2,7 @@
 title: About
 ---
 
-Hi! My name is **Jordi Smit**.
-I have a long history of writing software and AI-related products;
-Even before starting university, I already wrote an AI that learned to play minesweeper by itself and was way better at it than me.
-
-I'm deeply passionate about software engineering, data science, and automation.
+Hi! My name is **Jordi Smit**. I'm deeply passionate about software engineering, data science, and automation.
 Nothing makes me happier than creating software that helps humans by automating a tedious and manual-intensive part of their job.
 Therefore, I love talking about data science since this field has opened the door to many new kinds of automations.
 However, too often, data science solutions stay stuck at the proof of concept level.

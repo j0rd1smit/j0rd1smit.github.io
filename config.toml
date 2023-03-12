@@ -1,6 +1,7 @@
 baseURL = 'https://j0rd1smit.github.io'
 copyright = "Jordi Smit - All rights reserved"
 enableRobotsTXT = true
+image = 'images/author.jpg'
 languageCode = 'en-us'
 summaryLength = 20
 title = 'J0rd1Smit'
@@ -30,6 +31,8 @@ url = "/about"
 weight = 400
 
 [params]
+description = "A Machine Learning Engineer's blog"
+tags = ["Machine leanring", "Jordi Smit", "Jordi", "Smit"]
 
 [params.author]
 firstName = 'Jordi'

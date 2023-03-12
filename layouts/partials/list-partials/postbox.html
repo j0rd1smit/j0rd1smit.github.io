@@ -3,6 +3,7 @@
   <div class="card h-100">
     <a href="{{ .Permalink }}">
       <div class="maxthumb">
+        <!--TODO is there a nice way that actually use the yml data in the markdown? -->
         {{ $images := .Resources.ByType "image" }}
         {{ with $images.GetMatch "images/cover*" }}
           {{ $resizeImg := .Resize "600x" }}
@@ -17,7 +18,7 @@
           {{ .Title }}
         </a>
       </h2>
-      <h4 class="card-text">{{ .Summary }}</h4>
+      <h4 class="card-text">{{ .Description }}</h4>
     </div>
     <div class="card-footer bg-white">
       <div class="wrapfooter">

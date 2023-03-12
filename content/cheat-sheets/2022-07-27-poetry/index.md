@@ -1,8 +1,14 @@
 ---
-title: "Poetry"
+title: "Poetry cheatsheet"
+description: "Keep forgetting the CLI commands for Poetry? This cheatsheet will help you."
 date: 2022-07-27T20:05:21+02:00
 publishdate: 2022-07-27T20:05:21+02:00
-tags: []
+tags:
+- poetry
+- python
+- dependency management
+- virtual environment
+- CLI
 image: "/cover.jpg"
 use_featured_image: false
 featured_image_size: 200x
@@ -15,8 +21,6 @@ math: false
 I use it quite often in my day-to-day work.
 If you are a PIP or Conda user, you might find that Poetry's CLI is slightly different from what you are used to.
 So to help you get started I created overview of the command I use most often. 
-
-
 
 
 ## Project creation

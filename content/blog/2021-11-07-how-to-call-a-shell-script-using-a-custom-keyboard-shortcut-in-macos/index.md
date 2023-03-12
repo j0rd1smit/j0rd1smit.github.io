@@ -1,8 +1,13 @@
 ---
 title: "How to call a shell script using a custom keyboard shortcut in MacOS"
+description: "Boost your productivity in MacOS with custom keyboard shortcuts for shell scripts. This step-by-step guide will show you how to do it using Automator."
 date: 2021-11-07T21:23:20+02:00
 publishdate: 2021-11-07T21:23:20+02:00
-tags: []
+tags:
+- macos
+- keyboard shortcuts
+- shell
+- automation
 image: "/cover.png"
 draft: false
 math: false

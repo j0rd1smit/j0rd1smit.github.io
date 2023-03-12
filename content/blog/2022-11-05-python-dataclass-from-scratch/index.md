@@ -1,8 +1,11 @@
 ---
 title: "Python Dataclass From Scratch"
+description: "Want to understand the magic behind data classes? Learn how to create them from scratch using Python's exec function."
 date: 2022-11-05T10:51:16+01:00
 publishdate: 2022-11-06T10:51:16+01:00
-tags: []
+tags:
+- python
+- code generation
 draft: false
 math: false
 image: "/cover.png"
@@ -15,8 +18,6 @@ This is extremely convenient since it removes a lot of boilerplate code.
 I have been using data classes for years and often tell people about them.
 However, recently I showed it to someone new to Python, and they asked how this works under the hood.
 To be honest, at that moment, I also had no idea, but I decided to find out by implementing a data class from scratch.
-
-
 
 ## Python's exec function
 After doing some research, I discovered Python has the [exec](https://docs.python.org/3/library/functions.html#exec) function.
@@ -190,6 +191,3 @@ For example, the [dataclass](https://docs.python.org/3/library/dataclasses.html)
 Adding this functionality could also be a fun challenge.
 Another option could be to add type validation logic based on the `__annotations__`, which would produce functionality similar to that of [Pydantic](https://pydantic-docs.helpmanual.io/).
 And yet another option could be the [FastAPI](https://fastapi.tiangolo.com/) route whereby you use `__annotations__` as additional information for your framework functions.
-
-
-

@@ -1,8 +1,13 @@
 ---
 title: "How to Find the Last Record in a Group Using KQL"
+description: "Today I learned how to use KQL's arg_max function to find the last record in a log time interval group in Azure's Application Insight."
 date: 2022-10-31T14:09:56+01:00
 publishdate: 2022-10-31T14:09:56+01:00
-tags: []
+tags:
+- azure
+- kql
+- application insight
+- monitoring
 draft: false
 math: false
 image: "/cover.png"
