@@ -1,8 +1,14 @@
 ---
-title: "Poetry"
+title: "Poetry cheatsheet"
+description: "Keep forgetting the CLI commands for Poetry? This cheatsheet will help you."
 date: 2022-07-27T20:05:21+02:00
 publishdate: 2022-07-27T20:05:21+02:00
-tags: []
+tags:
+- poetry
+- python
+- dependency management
+- virtual environment
+- CLI
 image: "/cover.jpg"
 use_featured_image: false
 featured_image_size: 200x
@@ -14,30 +20,29 @@ math: false
 [Poetry](https://python-poetry.org/) is an awsome dependency management and virtual environment management tool for Python.
 I use it quite often in my day-to-day work.
 If you are a PIP or Conda user, you might find that Poetry's CLI is slightly different from what you are used to.
-So to help you get started I created overview of the command I use most often. 
-
-
-
+So to help you get started I created overview of the command I use most often.
 
 ## Project creation
+
 {{<table "table table-striped table-bordered">}}
 
 | Command                       | Description                                                                                                                                                                               |
 | ----------------------------- |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `poetry new my-package`       | This creates a new project. This new project will contain a new `pyproject.toml` and `readme.md` files. It also sets up the folder structure for your Python package and your unit tests. |
 | `poetry new --src my-package` | This also creates a new project but with the `src` project layout.                                                                                                                        |
-| `poetry init`                 | This creates a new `pyproject.toml` file without creating an entire folder structure.                                                                                                     | 
+| `poetry init`                 | This creates a new `pyproject.toml` file without creating an entire folder structure.                                                                                                     |
 
 {{</table>}}
 
 ## Dependancy management
+
 {{<table "table table-striped table-bordered">}}
 
 | Command                                                       | Description                                                                                                                                                                                                                                                                                                                                                                                        |
 | ------------------------------------------------------------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `poetry install`                                              | This installs **all** the dependencies that are specified in the `poetry.lock` file. Thus, if you change your `pyproject.toml` but you do **not** update your `poetry.lock` file it will install the dependencies as specified in the (outdated) `poetry.lock` file.  If there is no `poetry.lock` file, it will automatically first run the `poetry lock` command to create a `poetry.lock` file. | 
+| `poetry install`                                              | This installs **all** the dependencies that are specified in the `poetry.lock` file. Thus, if you change your `pyproject.toml` but you do **not** update your `poetry.lock` file it will install the dependencies as specified in the (outdated) `poetry.lock` file.  If there is no `poetry.lock` file, it will automatically first run the `poetry lock` command to create a `poetry.lock` file. |
 | `poetry install --no-dev`                                     | This only installs the main dependencies and does not install the development dependencies. Your dev dependencies are dependencies that you don't need to run the application such as `pytest`, `mypy`, etc. So, if you don't install them your final application will take up less space.                                                                                                         |
-| `poetry install --remove-untracked `                          | Removes all dependencies that are installed in your venv but are no longer specified in your `poetry.lock` file.                                                                                                                                                                                                                                                                                   |
+| `poetry install --remove-untracked`                          | Removes all dependencies that are installed in your venv but are no longer specified in your `poetry.lock` file.                                                                                                                                                                                                                                                                                   |
 | `poetry install --extras "NAME_1 NAME_N`                      | This installs the optional dependencies `NAME_1` and `NAME_N`.                                                                                                                                                                                                                                                                                                                                     |
 | `poetry install --no-root`                                    | This installs your projects dependencies but doesn't install your package to the global name space in the venv. Thus, you can no longer directly import the package you made.                                                                                                                                                                                                                      |
 | `poetry update`                                               | Update **all** the dependencies in the `poetry.lock` file to their latest version.                                                                                                                                                                                                                                                                                                                 |

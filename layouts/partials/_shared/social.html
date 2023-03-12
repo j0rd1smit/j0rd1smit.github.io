@@ -1,11 +1,11 @@
 <section class="text-center">
   {{ with .Site.Params.social.github }}
-    <a href="https://github.com/{{ . }}"
+    <a href="https://github.com/{{ . }}" aria-label="Author's GitHub"
       ><i class="fab fa-github social-icon" aria-hidden="true"></i
     ></a>
   {{ end }}
   {{ with .Site.Params.social.linkedin }}
-    <a href="https://linkedin.com/in/{{ . }}"
+    <a href="https://linkedin.com/in/{{ . }}" aria-label="Author's LinkedIn"
       ><i class="fab fa-linkedin social-icon" aria-hidden="true"></i
     ></a>
   {{ end }}
@@ -15,7 +15,7 @@
     ></a>
   {{ end }}
   {{ with .Site.Params.social.twitter }}
-    <a href="https://twitter.com/{{ . }}"
+    <a href="https://twitter.com/{{ . }}" aria-label="Author's Twitter"
       ><i class="fab fa-twitter social-icon" aria-hidden="true"></i
     ></a>
   {{ end }}

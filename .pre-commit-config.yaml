@@ -32,3 +32,9 @@ repos:
     - prettier@2.7.1
     - prettier-plugin-go-template@0.0.13
 
+- repo: https://github.com/igorshubovych/markdownlint-cli
+  rev: v0.32.2
+  hooks:
+  - id: markdownlint-fix
+    name: Format Markdown files
+    exclude: ^utils

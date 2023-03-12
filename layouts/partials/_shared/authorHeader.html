@@ -3,15 +3,22 @@
   {{ with
     $authorImg
   }}
-    {{ $resizeImg := .Resize "350x" }}
-    <a href="/about">
+    {{ $resizeImg := .Resize "500x" }}
+    <a
+      href="/about"
+      aria-label="Read more about {{ site.Params.author.firstName }} {{ site.Params.author.lastName }}"
+    >
       <img
+        alt="profile picture of {{ site.Params.author.firstName }} {{ site.Params.author.lastName }}"
         src="{{ $resizeImg.Permalink }}"
         class="rounded-circle text-center index-image"
       />
     </a>
   {{ end }}
-  <a href="/about">
+  <a
+    href="/about"
+    aria-label="Read more about {{ site.Params.author.firstName }} {{ site.Params.author.lastName }}"
+  >
     <h1 class="index-title">
       {{ .Site.Params.author.firstName }}
       {{ .Site.Params.author.lastName }}

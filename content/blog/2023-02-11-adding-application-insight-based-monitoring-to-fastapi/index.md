@@ -1,36 +1,43 @@
 ---
 title: "Adding Application Insight Based Monitoring to Fast API"
+description: "Learn how to add application insights-based monitoring to your FastAPI project using opencensus. All you need is custom middleware and a tracer."
 date: 2023-02-11T14:52:51+01:00
 publishdate: 2023-02-11T14:52:51+01:00
-tags: []
+tags:
+- python
+- application insight
+- fast api
+- monitoring
+- azure
 draft: false
 math: false
-image: "/cover.png"
+image: "cover.jpg"
 use_featured_image: true
 featured_image_size: 600x
 ---
-Application Insights is Azure's logging and monitoring service, but how do you use it with Fast API? 
+Application Insights is Azure's logging and monitoring service, but how do you use it with Fast API?
 In this blog post, we will explore how to send logs and traces to Application Insights.
-Finally, we will show you how to integrate this into your Fast API application using custom Middleware. 
+Finally, we will show you how to integrate this into your Fast API application using custom Middleware.
 Join us while we explore how to implement this using the opencensus library.
 
 ## How to use the opencensus library
-In this blog post, we will use the [opencensus](https://census-instrumentation.github.io/opencensus-python/trace/usage.html) library to send logs to Application Insights. 
-The opencensus library is the swiss army knife for monitoring, and it contains many exporters for a wide variety of monitoring services. 
+
+In this blog post, we will use the [opencensus](https://census-instrumentation.github.io/opencensus-python/trace/usage.html) library to send logs to Application Insights.
+The opencensus library is the swiss army knife for monitoring, and it contains many exporters for a wide variety of monitoring services.
 And as luck would have it, it also contains an exporter for Application Insights.
 In Fast API applications, you typically have two types of logs. The first type of log is a regular log event.
-A typical example of this type is when a system starts up, the occurrence of an exception, etc. 
+A typical example of this type is when a system starts up, the occurrence of an exception, etc.
 The second type is a request log. Request logs differ from regular logs since they have a response duration and a success status.
 Before adding both approaches to our Fast API application, let’s first explore how to use opencensus to send both types of logs to Application Insights.
 
+### How to send regular logs to Application Insights
 
-###  How to send regular logs to Application Insights
 Python has a build in logging library for logging events.
 By default, this logging library sends its logs to the console, but you can easily configure it to send its logs to another location.
 All you need to do is add a different handler to your logger.
 In our case, `opencensus` has already implemented such a handler for Application Insights. So all we need to do is add an `AzureLogHandler` to our logger.
-This handler does need a `InstrumentationKey`, which is Application Insight's version of an API key. You can obtain your `InstrumentationKey` by going to your Application Insights resource in the Azure portal. 
-You can find it on the main page of your resource under essentials. 
+This handler does need a `InstrumentationKey`, which is Application Insight's version of an API key. You can obtain your `InstrumentationKey` by going to your Application Insights resource in the Azure portal.
+You can find it on the main page of your resource under essentials.
 Once you have the connection string, you can add the `AzureLogHandler` to your logger as follows:
 
 ```python
@@ -60,13 +67,14 @@ Then, you must click on the `Logs` tab.
 
 {{< figure src="images/how_to_find_logs.jpg" caption="Click on the logs button." >}}
 
-Finally, click on the `traces` submenu to see your logs: 
+Finally, click on the `traces` submenu to see your logs:
 {{< figure src="images/how_to_find_traces.jpg" caption="Click on the traces button in the left menu." >}}
 
-Another nice feature of the `AzureLogHandler` is that it also supports logging custom properties. 
-All you need to do is add a dictionary with data to the `extra` parameter when you log a message. 
+Another nice feature of the `AzureLogHandler` is that it also supports logging custom properties.
+All you need to do is add a dictionary with data to the `extra` parameter when you log a message.
 This feature is helpful if you want to include additional information, such as the current deployment name, the deployed version, etc.
 For example:
+
 ```python
 # Define custom properties for the log message
 properties = {
@@ -81,6 +89,7 @@ After running the above code, you will see the custom properties are logged in t
 {{< figure src="images/log_event_result.jpeg" caption="The resulting log in Application Insights." >}}
 
 ### How to send request traces to Application Insights
+
 In web applications, we are also interested in which endpoints are called, their response code. and how long they needed to process a request.
 In theory, you could implement this yourself using try-catch blocks, the `time` library and the `extra` parameter of the `logger` class.
 However, this is a lot of work and error-prone if you have to do this often.
@@ -96,10 +105,8 @@ It works as follows:
 1. You end the `Span`.
 1. You send the response.
 
-
-After you have done this, the `Tracer` will send the `Span` as a log to Application Insights with the duration and all other metadata as properties. 
+After you have done this, the `Tracer` will send the `Span` as a log to Application Insights with the duration and all other metadata as properties.
 Setting this up requires a bit more boilerplate code than logging an event, but it is still far less than doing this all from scratch:
-
 
 ```python
 import os
@@ -141,7 +148,9 @@ After running the above code a few times, you will see the following types of lo
 You see that Application Insights has automatically added the duration of the event and its performance bucket as properties.
 
 {{< figure src="images/log_duration.jpg" caption="The resulting logs in Application Insights. You can find them under requests." >}}
+
 ## Putting it all together
+
 We know how to log events and traces to Application Insights, lets add them to our FastAPI application.
 Sending our regular logs to Application Insights is relatively straightforward.
 All we need to do is add an `AzureLogHandler` to our logger.
@@ -149,7 +158,7 @@ Adding the request traces is a bit more complicated, but we can do it using cust
 This middleware will be called for every request and will start a `Span` before the request is handled and end the `Span` just before the response is sent.
 Using this approach, we get the following:
 
-```python 
+```python
 import logging
 import os
 import random
@@ -233,8 +242,8 @@ except Exception as e:
     raise e
 ```
 
-
 ## Conclusion
+
 That's it, we now have a FastAPI application that logs events and traces to Application Insights.
 When I first did this, I was confused by the documentation and the lack of examples.
 So, I hope this post will make it easier for you to start with Application Insight-based monitoring.

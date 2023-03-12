@@ -4,20 +4,50 @@
     name="viewport"
     content="width=device-width, initial-scale=1, shrink-to-fit=no"
   />
-
+  <!--  define title of page-->
+  {{- if .IsHome -}}
+    {{- .Scratch.Set "title" .Site.Title -}}
+  {{- else if eq .Kind "404" -}}
+    {{- .Scratch.Set "title" "404 Page not found" -}}
+  {{- else -}}
+    {{- .Scratch.Set "title" (printf "%s | %s" .Page.Title .Site.Title) -}}
+  {{- end -}}
+  <!--  define description of page-->
+  {{- if .Params.Description -}}
+    {{- .Scratch.Set "description" .Params.Description -}}
+  {{- else -}}
+    {{- .Scratch.Set "description" site.Params.Description -}}
+  {{- end -}}
   {{ hugo.Generator }}
   {{ with .Site.Params.logo }}
     <link rel="icon" href="{{ . | urlize | relURL }}" />
   {{ end }}
-  <title>{{ .Page.Title }} | {{ .Site.Title }}</title>
-  {{ with .Site.Params.meta.description }}
-    <meta name="description" content="{{ . }}" />
+  <title>{{ .Scratch.Get "title" }}</title>
+  <meta name="description" content="{{ .Scratch.Get "description" }}" />
+  {{- if .Params.tags -}}
+    <meta name="keywords" content="{{ delimit .Params.tags ", " }}" />
+  {{- else -}}
+    <meta name="keywords" content="{{ delimit site.Params.tags ", " }}" />
+  {{- end -}}
+  <link rel="canonical" href="{{ .Permalink }}" />
+  <!-- open graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{ .Scratch.Get "title" }}" />
+  <meta property="og:description" content="{{ .Scratch.Get "description" }}" />
+  <meta property="og:site_name" content="{{ .Site.Title }}" />
+  <meta property="og:url" content="{{ .Permalink }}" />
+  <meta property="og:locale" content="en" />
+  {{ if .Params.image }}
+    <!--TODO is there a nice way that actually use the yml data in the markdown? -->
+    {{ $images := .Resources.ByType "image" }}
+    {{ with $images.GetMatch "images/cover*" }}
+      <meta property="og:image" content="{{ .Permalink }}" />
+      <meta property="og:image:secure_url" content="{{ .Permalink }}" />
+    {{ end }}
   {{ end }}
-  {{ with .Site.Params.meta.keywords }}
-    <meta name="keywords" content="{{ . }}" />
-  {{ end }}
+  <meta property="og:type" content="website" />
+
   {{ template "_internal/twitter_cards.html" . }}
-  {{ template "_internal/opengraph.html" . }}
   {{ $bootstrap := resources.Get "/css/bootstrap.min.css" | resources.Fingerprint }}
   <link
     rel="stylesheet"
@@ -64,4 +94,27 @@
       media="screen"
     />
   {{- end }}
+  <link
+    rel="icon"
+    type="image/x-icon"
+    href="{{ (resources.Get "/favicon/favicon.ico").Permalink }}"
+  />
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="{{ (resources.Get "/favicon/apple-touch-icon.png").Permalink }}"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="{{ (resources.Get "/favicon/favicon-32x32.png").Permalink }}"
+  />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="{{ (resources.Get "/favicon/favicon-16x16.png").Permalink }}"
+  />
+  <meta name="theme-color" content="#fff" />
 </head>

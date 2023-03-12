@@ -1,8 +1,13 @@
 ---
 title: "How to call a shell script using a custom keyboard shortcut in MacOS"
+description: "Boost your productivity in MacOS with custom keyboard shortcuts for shell scripts. This step-by-step guide will show you how to do it using Automator."
 date: 2021-11-07T21:23:20+02:00
 publishdate: 2021-11-07T21:23:20+02:00
-tags: []
+tags:
+- macos
+- keyboard shortcuts
+- shell
+- automation
 image: "/cover.png"
 draft: false
 math: false
@@ -36,7 +41,7 @@ So to ensure that our custom shortcut can be used in any situation, make sure th
 We want to run shell commands when we press our custom keyboard shortcut, so we need the _Run Shell Script_ action.
 You can easily find it by typing "shell" in the action search bar:
 
-{{< figure src="images/automato_workflow_add_shell_section.jpg" class="figureCenter" caption="The *Run Shell Script*  action looks like this." >}}
+{{< figure src="images/automato_workflow_add_shell_section.jpg" class="figureCenter" caption="The _Run Shell Script_  action looks like this." >}}
 
 Now drag and drop the _Run Shell Script_ action into the workflow area.
 After doing this, you can select your shell language, e.g., zsh, bash, python, etc.
@@ -48,7 +53,7 @@ If your script needs these, you need to do this manually.
 For example, for zsh, you can do this by adding the `source ~/.zshrc` command.
 However, be aware that this can slow down your script if your `~/.zshrc` is very large.
 
-{{< figure src="images/automato_workflow_add_shell_section_shell_script.jpg"  caption="This is the *Run Shell Script* action where you put shell commands." >}}
+{{< figure src="images/automato_workflow_add_shell_section_shell_script.jpg"  caption="This is the _Run Shell Script_ action where you put shell commands." >}}
 
 ## Binding the custom service to a keyboard shortcut
 
@@ -59,7 +64,6 @@ If you click on your custom service, you get the option to select your keyboard 
 Now your shell script will run in the background every time you press your custom keyboard shortcut.
 
 {{< figure src="images/keyboard_create_shortcut.jpg" caption="This is Keyboard Preferences where you can add your custom shortcut." >}}
-
 
 ## Wrapping up
 
