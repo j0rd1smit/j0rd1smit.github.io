@@ -52,14 +52,14 @@
   <meta property="og:type" content="website" />
 
   {{ template "_internal/twitter_cards.html" . }}
-  {{ $bootstrap := resources.Get "/css/bootstrap.min.css" | resources.Fingerprint }}
+  {{ $bootstrap := resources.Get "/css/bootstrap.min.css"  | resources.Fingerprint }}
   <link
     rel="stylesheet"
     href="{{ $bootstrap.RelPermalink | absURL }}"
     integrity="{{ $bootstrap.Data.Integrity }}"
   />
 
-  {{ $goolge_fonts := resources.Get "/css/goolge-fonts.css" | resources.Fingerprint }}
+  {{ $goolge_fonts := resources.Get "/css/goolge-fonts.css" | minify | resources.Fingerprint }}
   <link
     rel="stylesheet"
     href="{{ $goolge_fonts.RelPermalink | absURL }}"
@@ -72,14 +72,14 @@
     crossorigin="anonymous"
   />
 
-  {{ $medium := resources.Get "/css/medium.css" | resources.Fingerprint }}
+  {{ $medium := resources.Get "/css/medium.css" | minify | resources.Fingerprint }}
   <link
     rel="stylesheet"
     href="{{ $medium.RelPermalink | absURL }}"
     integrity="{{ $medium.Data.Integrity }}"
   />
 
-  {{ $additional := resources.Get "/css/additional.css" | resources.Fingerprint }}
+  {{ $additional := resources.Get "/css/additional.css" | minify | resources.Fingerprint }}
   <link
     rel="stylesheet"
     href="{{ $additional.RelPermalink | absURL }}"

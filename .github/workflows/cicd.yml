@@ -26,6 +26,11 @@ jobs:
         fetch-depth: 1
         lfs: true
 
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 19
+    - run: npm install
+
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
       with:
