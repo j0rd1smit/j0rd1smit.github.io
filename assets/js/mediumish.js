@@ -1,6 +1,20 @@
 import $ from "jquery";
+import { Collapse } from "bootstrap";
 
 $(document).ready(function ($) {
+  const collapseElementList = [].slice.call(
+    document.querySelectorAll(".collapse")
+  );
+  collapseElementList.forEach(function (collapseEl) {
+    const collapse = new Collapse(collapseEl, { toggle: false });
+
+    const collapseElId = collapseEl.getAttribute("id");
+    const btnSelector = `[data-toggle="collapse"][data-target="#${collapseElId}"]`;
+    document.querySelectorAll(btnSelector).forEach((element) => {
+      element.onclick = collapse.toggle.bind(collapse);
+    });
+  });
+
   var offset = 1250;
   var duration = 800;
   $(window).scroll(function () {
