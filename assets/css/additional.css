@@ -51,5 +51,6 @@ figure {
   cursor: pointer;
 }
 
-.generated_text {
+a {
+  text-decoration: none;
 }

@@ -16,10 +16,13 @@
       {{ $blog_posts := (where .Site.RegularPages "Section" "blog" ) }}
       {{ $tils := (where .Site.RegularPages "Section" "til" ) }}
       {{ $posts := ($blog_posts | union $tils ).ByPublishDate.Reverse }}
-      {{ $post_paginator := .Paginate ($posts) 3 }}
-      {{ range $post_paginator.Pages }}
-        {{- partial "list-partials/postbox.html" . -}}
+      {{ range $k, $v := (.Paginate ($posts) 12).Pages }}
+
+        <div class="col-sm-12 col-md-6 col-lg-4 col-xxl-3 mb-30px card-group ">
+          {{- partial "list-partials/postbox.html" $v -}}
+        </div>
       {{ end }}
+
     </div>
   </div>
 {{ end }}

@@ -29,7 +29,7 @@
     <!-- Begin Menu -->
     <div class="collapse navbar-collapse" id="navbarMediumish">
       {{ $currentPage := . }}
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav ms-auto">
         {{ range .Site.Menus.main }}
           <li
             class="nav-item {{ if $currentPage.HasMenuCurrent `main` . }}

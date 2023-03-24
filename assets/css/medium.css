@@ -8,12 +8,12 @@ License: https://www.wowthemes.net/freebies-license/
 }
 
 a {
-  color: #00ab6b;
+  color: rgba(9, 105, 218, 0.75);
   transition: all 0.2s;
 }
 
 a:hover {
-  color: #038252;
+  color: rgba(9, 105, 218, 1);
   text-decoration: none;
 }
 
@@ -118,6 +118,7 @@ section.recent-posts {
   overflow: hidden;
   text-align: center;
 }
+
 .maxthumb img {
   height: 100%;
   width: 100%;
@@ -859,4 +860,15 @@ iframe {
 .post-featured-image {
   text-align: center;
   margin-bottom: 30px;
+}
+
+:not(pre) > code {
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  background: rgba(175, 184, 193, 0.25);
+  color: rgba(0, 0, 0, 0.8);
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  white-space: break-spaces;
 }
