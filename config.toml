@@ -54,3 +54,4 @@ twitter = "j0rd1smit"
 blog = '/blog/:title'
 cheat-sheets = '/cheat-sheets/:title'
 til = '/til/:title'
+tools = '/tools/:title'

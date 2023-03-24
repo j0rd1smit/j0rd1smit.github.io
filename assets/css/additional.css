@@ -54,3 +54,7 @@ figure {
 a {
   text-decoration: none;
 }
+
+.chunk-span-active {
+  background-color: #ffff00;
+}
