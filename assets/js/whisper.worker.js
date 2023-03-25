@@ -2,12 +2,9 @@ import { createModelLoader } from "./modelFactories.js";
 import { MessageTypes, ModelNames } from "./utils.js";
 
 const modelLoaders = {};
-modelLoaders[ModelNames.WHISPER_TINY] = createModelLoader(
-  ModelNames.WHISPER_TINY
-);
-modelLoaders[ModelNames.WHISPER_TINY_EN] = createModelLoader(
-  ModelNames.WHISPER_TINY_EN
-);
+for (const model_name of Object.values(ModelNames)) {
+  modelLoaders[model_name] = createModelLoader(model_name);
+}
 
 self.addEventListener("message", async (event) => {
   const { type, audio, model_name } = event.data;
@@ -18,9 +15,11 @@ self.addEventListener("message", async (event) => {
 
 async function transcribe(audio, model_name) {
   // check if model_name is not in modelLoaders
-  sendLoadingMessage("loading");
+  sendLoadingMessage("loading", "");
+
   if (!modelLoaders[model_name]) {
-    sendLoadingMessage("error");
+    console.log("Model not found");
+    sendLoadingMessage("error", "Model not found");
     return;
   }
 
@@ -58,10 +57,11 @@ async function load_model_callback(data) {
   }
 }
 
-function sendLoadingMessage(status) {
+function sendLoadingMessage(status, message) {
   self.postMessage({
     type: MessageTypes.LOADING,
     status,
+    message,
   });
 }
 

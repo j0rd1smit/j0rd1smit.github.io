@@ -12,6 +12,7 @@ const END_TIME_ATTR = "data-timestamp-end";
 const FILE_UPLOAD_BTN = document.getElementById("file-input");
 const FORM_CONTAINER = document.getElementById("form-container");
 const FORM_SUBMIT_BTN = document.getElementById("form-submit-btn");
+const MODEL_NAME_SELECTION_INPUT = document.getElementById("model-name-input");
 
 /** Transcription UI elements **/
 const VIDEO_PLAYER = document.getElementById("video-player");
@@ -27,6 +28,13 @@ const PROGRESS_BAR = document.getElementById("transcription-progress-bar");
 const PROGRESS_BAR_CONTAINER = document.getElementById(
   "transcription-progress-bar-container"
 );
+const MODEL_NAME_DISPLAY = document.getElementById("model-name-display");
+const LOADING_SPINNER_CONTAINER = document.getElementById(
+  "loading-spinner-container"
+);
+const LOADING_MESSAGE_CONTAINER = document.getElementById(
+  "loading-message-container"
+);
 
 /** Web worker **/
 const WORKER = new Worker(whisperWorkerPath);
@@ -40,14 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
     await handleFormSubmission();
   });
 
-  FILE_UPLOAD_BTN.addEventListener("change", (event) => {
-    // TODO: check if model name is set.
-    if (isFileUploaded()) {
-      FORM_SUBMIT_BTN.disabled = false;
-    } else {
-      FORM_SUBMIT_BTN.disabled = true;
-    }
-  });
+  FILE_UPLOAD_BTN.addEventListener("change", (event) => onFormInputChanges());
+  MODEL_NAME_SELECTION_INPUT.addEventListener("change", (event) =>
+    onFormInputChanges()
+  );
 
   /** transcription view elements **/
   VIDEO_PLAYER.addEventListener("timeupdate", (event) =>
@@ -70,13 +74,21 @@ document.addEventListener("DOMContentLoaded", () => {
       handleLoadingMessage(event.data);
     }
     if (type === MessageTypes.DOWNLOADING) {
-      // do nothing
+      LOADING_MESSAGE_CONTAINER.innerHTML = "Downloading model...";
     }
     if (type === MessageTypes.RESULT) {
       handleResultMessage(event.data);
     }
   };
 });
+
+function onFormInputChanges() {
+  if (isFileUploaded() && isModelNameSelected()) {
+    FORM_SUBMIT_BTN.disabled = false;
+  } else {
+    FORM_SUBMIT_BTN.disabled = true;
+  }
+}
 
 function highlightCurrentChunk(currentTime) {
   const activeClassName = "chunk-span-active";
@@ -97,24 +109,25 @@ function highlightCurrentChunk(currentTime) {
 
 function handleLoadingMessage(data) {
   const { status } = event.data;
+  showElement(LOADING_SPINNER_CONTAINER);
+  showElement(LOADING_MESSAGE_CONTAINER);
   if (status === LoadingStatus.SUCCESS) {
-    // do nothing
+    LOADING_MESSAGE_CONTAINER.innerHTML =
+      "Model loaded successfully. Starting transcription...";
   }
   if (status === LoadingStatus.ERROR) {
-    // TODO show error message
+    LOADING_MESSAGE_CONTAINER.innerHTML =
+      "Oops! Something went wrong. Please refresh the page and try again.";
   }
   if (status === LoadingStatus.LOADING) {
-    RESULTS_CONTAINER.innerHTML = `
-            <div class="d-flex justify-content-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>
-            `;
+    LOADING_MESSAGE_CONTAINER.innerHTML = "Loading model into memory...";
   }
 }
 
 function handleResultMessage(data) {
+  hideElement(LOADING_SPINNER_CONTAINER);
+  hideElement(LOADING_MESSAGE_CONTAINER);
+
   const { results, isDone, completedUntilTimestamp } = event.data;
   RESULTS_CONTAINER.innerHTML = "";
   for (const result of results) {
@@ -158,16 +171,18 @@ function createResultLine(result, isDone) {
 }
 
 async function handleFormSubmission() {
-  if (FILE_UPLOAD_BTN.length === 0) {
+  if (!isFileUploaded() || !isModelNameSelected()) {
     return;
   }
+
+  const model_name = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
   const file = FILE_UPLOAD_BTN.files[0];
   const audio = await readAudioFrom(file);
 
   WORKER.postMessage({
     type: MessageTypes.INFERENCE_REQUEST,
     audio,
-    model_name: ModelNames.WHISPER_TINY_EN,
+    model_name,
   });
   VIDEO_PLAYER.src = URL.createObjectURL(file);
   showTranscriptionView();
@@ -187,6 +202,8 @@ function showTranscriptionView() {
   showElement(TRANSCRIPT_CONTAINER);
   setProgressBarTo(0);
   showElement(PROGRESS_BAR_CONTAINER);
+  MODEL_NAME_DISPLAY.innerText = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
+  RESULTS_CONTAINER.innerHTML = "";
 }
 
 function showFormView() {
@@ -201,6 +218,16 @@ function isFileUploaded() {
   }
   //TODO: check if file is valid
   return true;
+}
+
+function isModelNameSelected() {
+  const selectedValue = MODEL_NAME_SELECTION_INPUT.value;
+
+  if (MODEL_NAME_SELECTION_INPUT.value === "") {
+    return false;
+  }
+  const modelName = `openai/${selectedValue}`;
+  return Object.values(ModelNames).indexOf(modelName) !== -1;
 }
 
 function hideElement(element) {

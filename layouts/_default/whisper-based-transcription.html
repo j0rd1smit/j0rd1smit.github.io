@@ -28,32 +28,43 @@
                         class="form-control"
                         type="file"
                         id="file-input"
-                        accept=".mp3,.wav,.mp4,.mov,.avi,.flv,.wmv,.mpeg,.mpg,.webm"
+                        accept=".mp3,.wav,.mp4,.mov,.avi,.flv,.wmv,.mpeg,.mpg,.webm,.opus"
                       />
                       <div class="form-text">
-                        We support .mp3, .wav, .mp4, .mov, .avi, .flv, .wmv,
-                        .mpeg, .mpg and .m4v.
+                        We only support audio and video files.
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="model-name" class="form-label"
+                      <label for="model-name-input" class="form-label"
                         >Which model should be used?</label
                       >
                       <select
                         class="form-select"
                         aria-label="Default select example"
-                        id="model-name"
+                        id="model-name-input"
                       >
-                        <option selected>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option selected value="whisper-tiny.en">
+                          whisper-tiny.en
+                        </option>
+                        <option value="whisper-tiny">whisper-tiny</option>
+                        <option value="whisper-base">whisper-base.en</option>
+                        <option value="whisper-base">whisper-base</option>
+                        <option value="whisper-small">whisper-small</option>
+                        <option value="whisper-small.en">
+                          whisper-small.en
+                        </option>
                       </select>
                       <div class="form-text">
-                        Large will be more accurate, but slower.
+                        Large will be more accurate, but slower. In the models
+                        are listed in order of size. The models with .en at the
+                        only support English but are slightly more accurate.
                       </div>
                     </div>
-                    <button id="form-submit-btn" class="btn btn-primary">
+                    <button
+                      id="form-submit-btn"
+                      class="btn btn-primary"
+                      disabled
+                    >
                       Submit
                     </button>
                   </form>
@@ -64,6 +75,7 @@
                   <div class="col-md-12 col-lg-6">
                     <div class="sticky-top sticky-top-offset">
                       <h2>Input</h2>
+                      <p><b>Model:</b> <span id="model-name-display"></span></p>
                       <div class="embed-responsive embed-responsive-4by3">
                         <video
                           controls
@@ -105,6 +117,15 @@
                   </div>
                   <div class="col-md-12 col-lg-6">
                     <h2>Transcription</h2>
+                    <p id="loading-message-container">Loading...</p>
+                    <div
+                      class="d-flex justify-content-center"
+                      id="loading-spinner-container"
+                    >
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div>
                     <div id="results-container"></div>
                   </div>
                 </div>
@@ -116,7 +137,7 @@
     </div>
   </div>
   <!-- End Article
-    ================================================== -->
+  ================================================== -->
 
   {{ $worker := resources.Get "/js/whisper.worker.js" | js.Build }}
   {{ $indexjs := resources.Get "/js/whisper-based-transcription.js" | js.Build (dict "minify" false "params" (dict "whisperWorkerPath" $worker.RelPermalink) ) | fingerprint }}
