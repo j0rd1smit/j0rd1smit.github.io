@@ -14,11 +14,14 @@
         </div>
         <div class="col-md-11">
           <div class="mainheading">
-            <h1 class="posttitle ">AI based transcription tool</h1>
+            <h1 class="posttitle ">{{ .Title }}</h1>
+
             <div class="article-post">
               <div id="form-container" class="row">
-                <div class="col-md-6">
-                  <h2>Select the file you want to transcribe</h2>
+                <div class="col-lg-6">
+                  {{ .Content }}
+                </div>
+                <div class="col-lg-6">
                   <form>
                     <div class="mb-3">
                       <label for="file-input" class="form-label"
@@ -60,11 +63,7 @@
                         only support English but are slightly more accurate.
                       </div>
                     </div>
-                    <button
-                      id="form-submit-btn"
-                      class="btn btn-primary"
-                      disabled
-                    >
+                    <button id="form-submit-btn" class="btn btn-primary">
                       Submit
                     </button>
                   </form>
@@ -89,7 +88,7 @@
                         id="download-results-as-csv-btn"
                         class="btn btn-primary"
                       >
-                        Download
+                        Download as CSV
                       </button>
                       <button
                         id="close-transcription-container-btn"
@@ -113,6 +112,15 @@
                           </div>
                         </div>
                       </div>
+                      <div class="form-text">
+                        The transcribed text may change as the generation
+                        process continues. This is normal and happens because
+                        the model picks the most likely sentence (<a
+                          href="https://en.wikipedia.org/wiki/Beam_search"
+                          target="_blank"
+                          >beam search</a
+                        >), which can change when more audio has been processed.
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-12 col-lg-6">
@@ -126,7 +134,10 @@
                         <span class="sr-only">Loading...</span>
                       </div>
                     </div>
-                    <div id="results-container"></div>
+                    <div>
+                      <span id="results-container"></span>
+                      <span id="partial-results-container"></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -137,7 +148,7 @@
     </div>
   </div>
   <!-- End Article
-  ================================================== -->
+================================================== -->
 
   {{ $worker := resources.Get "/js/whisper.worker.js" | js.Build }}
   {{ $indexjs := resources.Get "/js/whisper-based-transcription.js" | js.Build (dict "minify" false "params" (dict "whisperWorkerPath" $worker.RelPermalink) ) | fingerprint }}

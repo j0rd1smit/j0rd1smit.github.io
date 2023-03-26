@@ -1,6 +1,7 @@
 import { whisperWorkerPath } from "@params";
 import { LoadingStatus, MessageTypes, ModelNames } from "./utils.js";
 import { Tooltip } from "bootstrap";
+import $ from "jquery";
 
 /** contants **/
 const HIDDEN_CLASS = "d-none";
@@ -17,6 +18,9 @@ const MODEL_NAME_SELECTION_INPUT = document.getElementById("model-name-input");
 /** Transcription UI elements **/
 const VIDEO_PLAYER = document.getElementById("video-player");
 const RESULTS_CONTAINER = document.getElementById("results-container");
+const PARTIAL_RESULTS_CONTAINER = document.getElementById(
+  "partial-results-container"
+);
 const TRANSCRIPT_CONTAINER = document.getElementById("transcription-container");
 const DOWNLOAD_TRANSCRIPT_BTN = document.getElementById(
   "download-results-as-csv-btn"
@@ -37,10 +41,9 @@ const LOADING_MESSAGE_CONTAINER = document.getElementById(
 );
 
 /** Web worker **/
-const WORKER = new Worker(whisperWorkerPath);
+let WORKER;
 
-// when document is ready add an event listenere for the play time to VIDEO_PLAYER
-document.addEventListener("DOMContentLoaded", () => {
+$(document).ready(() => {
   FORM_SUBMIT_BTN.disabled = true;
   /** Form view elements **/
   FORM_SUBMIT_BTN.addEventListener("click", async (event) => {
@@ -66,9 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     downloadTranscript();
   });
+  WORKER = createWorker();
+});
 
-  /** Web worker **/
-  WORKER.onmessage = (event) => {
+function createWorker() {
+  const worker = new Worker(whisperWorkerPath);
+  worker.onmessage = (event) => {
     const { type } = event.data;
     if (type === MessageTypes.LOADING) {
       handleLoadingMessage(event.data);
@@ -79,8 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (type === MessageTypes.RESULT) {
       handleResultMessage(event.data);
     }
+    if (type === MessageTypes.RESULT_PARTIAL) {
+      handlePartialResultMessage(event.data);
+    }
+    if (type === MessageTypes.INFERENCE_DONE) {
+      handleInferenceDone(event.data);
+    }
   };
-});
+  return worker;
+}
 
 function onFormInputChanges() {
   if (isFileUploaded() && isModelNameSelected()) {
@@ -124,34 +137,60 @@ function handleLoadingMessage(data) {
   }
 }
 
-function handleResultMessage(data) {
+function handlePartialResultMessage(data) {
   hideElement(LOADING_SPINNER_CONTAINER);
   hideElement(LOADING_MESSAGE_CONTAINER);
 
-  const { results, isDone, completedUntilTimestamp } = event.data;
-  RESULTS_CONTAINER.innerHTML = "";
-  for (const result of results) {
-    RESULTS_CONTAINER.appendChild(createResultLine(result, isDone));
-  }
-  if (!isDone) {
-    const totalDuration = VIDEO_PLAYER.duration;
-    const progress = (completedUntilTimestamp / totalDuration) * 100;
-    setProgressBarTo(progress);
-  } else {
-    DOWNLOAD_TRANSCRIPT_BTN.disabled = false;
-    setProgressBarTo(100);
+  const { result } = data;
+  const resultElement = createResultLine(result, false);
+  PARTIAL_RESULTS_CONTAINER.innerHTML = "";
+  PARTIAL_RESULTS_CONTAINER.appendChild(resultElement);
+}
 
-    // wait for 1 second then hide the progress bar
-    setTimeout(() => {
-      hideElement(PROGRESS_BAR_CONTAINER);
-    }, 1000);
-  }
+function handleResultMessage(data) {
+  const { results, completedUntilTimestamp } = data;
+  // replace changed elements
+  results
+    .slice(0, RESULTS_CONTAINER.children.length)
+    .forEach((result, index) => {
+      const element = RESULTS_CONTAINER.children[index];
+      if (hasResultChanged(result, element)) {
+        RESULTS_CONTAINER.replaceChild(createResultLine(result, true), element);
+      }
+    });
+  // add new elements
+  results.slice(RESULTS_CONTAINER.children.length).forEach((result) => {
+    RESULTS_CONTAINER.appendChild(createResultLine(result, true));
+  });
+
+  // Partial result are now in their own element
+  PARTIAL_RESULTS_CONTAINER.innerHTML = "";
+
+  // update progress bar
+  const totalDuration = VIDEO_PLAYER.duration;
+  const progress = (completedUntilTimestamp / totalDuration) * 100;
+  setProgressBarTo(progress);
+}
+
+function hasResultChanged(result, element) {
+  const start = parseInt(element.getAttribute(START_TIME_ATTR));
+  const end = parseInt(element.getAttribute(END_TIME_ATTR));
+  const text = element.innerText;
+  return text !== result.text || start !== result.start || end !== result.end;
+}
+
+function handleInferenceDone(data) {
+  DOWNLOAD_TRANSCRIPT_BTN.disabled = false;
+  setProgressBarTo(100);
+
+  // wait for 1 second then hide the progress bar
+  setTimeout(() => {
+    hideElement(PROGRESS_BAR_CONTAINER);
+  }, 1000);
 }
 
 function createResultLine(result, isDone) {
   const { start, end, text } = result;
-  const startRounded = Math.round(start);
-  const endRounded = Math.round(end);
 
   const span = document.createElement("span");
   span.innerText = text;
@@ -160,10 +199,12 @@ function createResultLine(result, isDone) {
   span.setAttribute(START_TIME_ATTR, `${start}`);
   span.setAttribute(END_TIME_ATTR, `${end}`);
 
+  // no tooltip for partial results since they change to often
+  // which can result in orphaned tooltips
   if (isDone) {
     span.setAttribute("data-bs-toggle", "tooltip");
     span.setAttribute("data-bs-placement", "top");
-    span.setAttribute("title", `${startRounded} - ${endRounded}`);
+    span.setAttribute("title", `${start} - ${end}`);
     new Tooltip(span);
   }
 
@@ -204,12 +245,15 @@ function showTranscriptionView() {
   showElement(PROGRESS_BAR_CONTAINER);
   MODEL_NAME_DISPLAY.innerText = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
   RESULTS_CONTAINER.innerHTML = "";
+  PARTIAL_RESULTS_CONTAINER.innerHTML = "";
 }
 
 function showFormView() {
   VIDEO_PLAYER.pause();
   hideElement(TRANSCRIPT_CONTAINER);
   showElement(FORM_CONTAINER);
+  WORKER.terminate();
+  WORKER = createWorker();
 }
 
 function isFileUploaded() {

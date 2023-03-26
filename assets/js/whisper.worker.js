@@ -83,12 +83,12 @@ class GenerationTracker {
     this.time_precision =
       pipeline.processor.feature_extractor.config.chunk_length /
       pipeline.model.config.max_source_positions;
-    this.results = [];
+    this.processed_chunks = [];
     this.callbackFunctionCounter = 0;
   }
 
   sendFinalResult() {
-    createResultMessage(this.results, true);
+    self.postMessage({ type: MessageTypes.INFERENCE_DONE });
   }
 
   callbackFunction(beams) {
@@ -98,19 +98,16 @@ class GenerationTracker {
     }
 
     const bestBeam = beams[0];
-    const text = this.pipeline.tokenizer.decode(bestBeam.output_token_ids, {
+    let text = this.pipeline.tokenizer.decode(bestBeam.output_token_ids, {
       skip_special_tokens: true,
     });
+
     const result = {
       text,
       start: this.getLastChuckTimestamp(),
       end: undefined,
     };
-    createResultMessage(
-      this.results.concat(result),
-      false,
-      this.getLastChuckTimestamp()
-    );
+    createPartialResultMessage(result);
   }
 
   chunkCallback(data) {
@@ -123,25 +120,34 @@ class GenerationTracker {
         force_full_sequences: false,
       }
     );
-    this.results = chunks.map(this.processChunk.bind(this));
-    createResultMessage(this.results, false, this.getLastChuckTimestamp());
+    // const newpProcessedChunks = chunks.map(this.processChunk.bind(this));
+    this.processed_chunks = chunks.map((chunk, index) =>
+      this.processChunk(chunk, index)
+    );
+    // this.processed_chunks = this.processed_chunks.concat(newpProcessedChunks);
+    createResultMessage(
+      this.processed_chunks,
+      false,
+      this.getLastChuckTimestamp()
+    );
   }
 
   getLastChuckTimestamp() {
-    if (this.results.length === 0) {
+    if (this.processed_chunks.length === 0) {
       return 0;
     }
-    return this.results[this.results.length - 1].end;
+    return this.processed_chunks[this.processed_chunks.length - 1].end;
   }
 
-  processChunk(chunk) {
+  processChunk(chunk, index) {
     const { text, timestamp } = chunk;
     const [start, end] = timestamp;
 
     return {
-      text,
-      start,
-      end: end || start + 0.9 * this.stride_length_s,
+      index,
+      text: `${text.trim()} `,
+      start: Math.round(start),
+      end: Math.round(end) || Math.round(start + 0.9 * this.stride_length_s),
     };
   }
 }
@@ -153,4 +159,22 @@ function createResultMessage(results, isDone, completedUntilTimestamp) {
     isDone,
     completedUntilTimestamp,
   });
+}
+
+function createPartialResultMessage(result) {
+  self.postMessage({
+    type: MessageTypes.RESULT_PARTIAL,
+    result,
+  });
+}
+
+function removeOverlap(s1, s2) {
+  let overlap = Math.min(s1.length, s2.length);
+  while (overlap > 0) {
+    if (s2.startsWith(s1.substring(s1.length - overlap))) {
+      return s2.substring(overlap);
+    }
+    overlap--;
+  }
+  return s2;
 }

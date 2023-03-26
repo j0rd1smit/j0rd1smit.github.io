@@ -15,6 +15,7 @@
     <h2 class="card-title">
       <a class="text-dark" href="{{ .Permalink }}">
         {{ if (eq .Section "til") }}TIL:{{ end }}
+        {{ if (eq .Section "tools") }}Tool:{{ end }}
         {{ .Title }}
       </a>
     </h2>
@@ -28,9 +29,11 @@
           {{ .Site.Params.author.lastName }}</span
         ><br />
         <span class="post-date"
-          >{{ dateFormat "Jan 2, 2006" .PublishDate }} -
-          {{ .ReadingTime }}
-          min read
+          >{{ dateFormat "Jan 2, 2006" .PublishDate }}
+          {{ if (ne .Section "tools") }}
+            - {{ .ReadingTime }} min read
+          {{ end }}
+
         </span>
       </span>
       <div class="clearfix"></div>
