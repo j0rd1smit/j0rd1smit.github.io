@@ -1,6 +1,7 @@
 baseURL = 'https://jordismit.com'
 copyright = "Jordi Smit - All rights reserved"
 enableRobotsTXT = true
+googleAnalytics = "G-YZP2SLQQK7"
 image = 'images/author.jpg'
 languageCode = 'en-us'
 summaryLength = 20
