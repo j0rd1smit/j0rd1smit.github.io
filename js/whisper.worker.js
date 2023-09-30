@@ -5,12 +5,13 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
     get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
   }) : x)(function(x) {
     if (typeof require !== "undefined")
       return require.apply(this, arguments);
-    throw Error('Dynamic require of "' + x + '" is not supported');
+    throw new Error('Dynamic require of "' + x + '" is not supported');
   });
   var __commonJS = (cb, mod2) => function __require2() {
     return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
@@ -31,6 +32,10 @@
     isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
     mod2
   ));
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
 
   // (disabled):fs
   var require_fs = __commonJS({
@@ -14976,7 +14981,7 @@ ${t2}`);
     "node_modules/@xenova/transformers/src/utils.js"(exports2, module2) {
       var fs = require_fs();
       var { env } = require_env();
-      var FileResponse = class _FileResponse {
+      var FileResponse = class {
         constructor(filePath) {
           this.filePath = filePath;
           this.headers = {};
@@ -15037,7 +15042,7 @@ ${t2}`);
           }
         }
         clone() {
-          return new _FileResponse(this.filePath, {
+          return new FileResponse(this.filePath, {
             status: this.status,
             statusText: this.statusText,
             headers: this.headers
@@ -15281,7 +15286,7 @@ ${t2}`);
   var require_tensor_utils = __commonJS({
     "node_modules/@xenova/transformers/src/tensor_utils.js"(exports2, module2) {
       var { ONNX } = require_onnx();
-      var Tensor = class _Tensor extends ONNX.Tensor {
+      var Tensor = class extends ONNX.Tensor {
         constructor(...args) {
           if (args[0] instanceof ONNX.Tensor) {
             super(args[0].type, args[0].data, args[0].dims);
@@ -15319,7 +15324,7 @@ ${t2}`);
         }
         _subarray(index, iterSize, iterDims) {
           let data = this.data.subarray(index * iterSize, (index + 1) * iterSize);
-          return new _Tensor(this.type, data, iterDims);
+          return new Tensor(this.type, data, iterDims);
         }
         tolist() {
           return reshape(this.data, this.dims);
@@ -16341,107 +16346,6 @@ ${t2}`);
       var RobertaTokenizer = class extends PreTrainedTokenizer {
       };
       var WhisperTokenizer = class extends PreTrainedTokenizer {
-        static LANGUAGES = {
-          "en": "english",
-          "zh": "chinese",
-          "de": "german",
-          "es": "spanish",
-          "ru": "russian",
-          "ko": "korean",
-          "fr": "french",
-          "ja": "japanese",
-          "pt": "portuguese",
-          "tr": "turkish",
-          "pl": "polish",
-          "ca": "catalan",
-          "nl": "dutch",
-          "ar": "arabic",
-          "sv": "swedish",
-          "it": "italian",
-          "id": "indonesian",
-          "hi": "hindi",
-          "fi": "finnish",
-          "vi": "vietnamese",
-          "he": "hebrew",
-          "uk": "ukrainian",
-          "el": "greek",
-          "ms": "malay",
-          "cs": "czech",
-          "ro": "romanian",
-          "da": "danish",
-          "hu": "hungarian",
-          "ta": "tamil",
-          "no": "norwegian",
-          "th": "thai",
-          "ur": "urdu",
-          "hr": "croatian",
-          "bg": "bulgarian",
-          "lt": "lithuanian",
-          "la": "latin",
-          "mi": "maori",
-          "ml": "malayalam",
-          "cy": "welsh",
-          "sk": "slovak",
-          "te": "telugu",
-          "fa": "persian",
-          "lv": "latvian",
-          "bn": "bengali",
-          "sr": "serbian",
-          "az": "azerbaijani",
-          "sl": "slovenian",
-          "kn": "kannada",
-          "et": "estonian",
-          "mk": "macedonian",
-          "br": "breton",
-          "eu": "basque",
-          "is": "icelandic",
-          "hy": "armenian",
-          "ne": "nepali",
-          "mn": "mongolian",
-          "bs": "bosnian",
-          "kk": "kazakh",
-          "sq": "albanian",
-          "sw": "swahili",
-          "gl": "galician",
-          "mr": "marathi",
-          "pa": "punjabi",
-          "si": "sinhala",
-          "km": "khmer",
-          "sn": "shona",
-          "yo": "yoruba",
-          "so": "somali",
-          "af": "afrikaans",
-          "oc": "occitan",
-          "ka": "georgian",
-          "be": "belarusian",
-          "tg": "tajik",
-          "sd": "sindhi",
-          "gu": "gujarati",
-          "am": "amharic",
-          "yi": "yiddish",
-          "lo": "lao",
-          "uz": "uzbek",
-          "fo": "faroese",
-          "ht": "haitian creole",
-          "ps": "pashto",
-          "tk": "turkmen",
-          "nn": "nynorsk",
-          "mt": "maltese",
-          "sa": "sanskrit",
-          "lb": "luxembourgish",
-          "my": "myanmar",
-          "bo": "tibetan",
-          "tl": "tagalog",
-          "mg": "malagasy",
-          "as": "assamese",
-          "tt": "tatar",
-          "haw": "hawaiian",
-          "ln": "lingala",
-          "ha": "hausa",
-          "ba": "bashkir",
-          "jw": "javanese",
-          "su": "sundanese"
-        };
         _decode_asr(sequences, {
           return_timestamps = false,
           return_language = false,
@@ -16609,6 +16513,107 @@ ${t2}`);
           return totalSequence;
         }
       };
+      __publicField(WhisperTokenizer, "LANGUAGES", {
+        "en": "english",
+        "zh": "chinese",
+        "de": "german",
+        "es": "spanish",
+        "ru": "russian",
+        "ko": "korean",
+        "fr": "french",
+        "ja": "japanese",
+        "pt": "portuguese",
+        "tr": "turkish",
+        "pl": "polish",
+        "ca": "catalan",
+        "nl": "dutch",
+        "ar": "arabic",
+        "sv": "swedish",
+        "it": "italian",
+        "id": "indonesian",
+        "hi": "hindi",
+        "fi": "finnish",
+        "vi": "vietnamese",
+        "he": "hebrew",
+        "uk": "ukrainian",
+        "el": "greek",
+        "ms": "malay",
+        "cs": "czech",
+        "ro": "romanian",
+        "da": "danish",
+        "hu": "hungarian",
+        "ta": "tamil",
+        "no": "norwegian",
+        "th": "thai",
+        "ur": "urdu",
+        "hr": "croatian",
+        "bg": "bulgarian",
+        "lt": "lithuanian",
+        "la": "latin",
+        "mi": "maori",
+        "ml": "malayalam",
+        "cy": "welsh",
+        "sk": "slovak",
+        "te": "telugu",
+        "fa": "persian",
+        "lv": "latvian",
+        "bn": "bengali",
+        "sr": "serbian",
+        "az": "azerbaijani",
+        "sl": "slovenian",
+        "kn": "kannada",
+        "et": "estonian",
+        "mk": "macedonian",
+        "br": "breton",
+        "eu": "basque",
+        "is": "icelandic",
+        "hy": "armenian",
+        "ne": "nepali",
+        "mn": "mongolian",
+        "bs": "bosnian",
+        "kk": "kazakh",
+        "sq": "albanian",
+        "sw": "swahili",
+        "gl": "galician",
+        "mr": "marathi",
+        "pa": "punjabi",
+        "si": "sinhala",
+        "km": "khmer",
+        "sn": "shona",
+        "yo": "yoruba",
+        "so": "somali",
+        "af": "afrikaans",
+        "oc": "occitan",
+        "ka": "georgian",
+        "be": "belarusian",
+        "tg": "tajik",
+        "sd": "sindhi",
+        "gu": "gujarati",
+        "am": "amharic",
+        "yi": "yiddish",
+        "lo": "lao",
+        "uz": "uzbek",
+        "fo": "faroese",
+        "ht": "haitian creole",
+        "ps": "pashto",
+        "tk": "turkmen",
+        "nn": "nynorsk",
+        "mt": "maltese",
+        "sa": "sanskrit",
+        "lb": "luxembourgish",
+        "my": "myanmar",
+        "bo": "tibetan",
+        "tl": "tagalog",
+        "mg": "malagasy",
+        "as": "assamese",
+        "tt": "tatar",
+        "haw": "hawaiian",
+        "ln": "lingala",
+        "ha": "hausa",
+        "ba": "bashkir",
+        "jw": "javanese",
+        "su": "sundanese"
+      });
       var CodeGenTokenizer = class extends PreTrainedTokenizer {
       };
       var CLIPTokenizer = class extends PreTrainedTokenizer {
@@ -16644,13 +16649,13 @@ ${t2}`);
           }
         }
       };
-      var CharTrieNode = class _CharTrieNode {
+      var CharTrieNode = class {
         constructor(isLeaf, children) {
           this.isLeaf = isLeaf;
           this.children = children;
         }
         static default() {
-          return new _CharTrieNode(false, /* @__PURE__ */ new Map());
+          return new CharTrieNode(false, /* @__PURE__ */ new Map());
         }
       };
       var TokenLattice = class {
@@ -16734,7 +16739,7 @@ ${t2}`);
           return nodes.map((x) => x.tokenId);
         }
       };
-      var TokenLatticeNode = class _TokenLatticeNode {
+      var TokenLatticeNode = class {
         constructor(tokenId, nodeId, pos, length, score) {
           this.tokenId = tokenId;
           this.nodeId = nodeId;
@@ -16745,7 +16750,7 @@ ${t2}`);
           this.backtraceScore = 0;
         }
         clone() {
-          const n = new _TokenLatticeNode(this.tokenId, this.nodeId, this.pos, this.length, this.score);
+          const n = new TokenLatticeNode(this.tokenId, this.nodeId, this.pos, this.length, this.score);
           n.prev = this.prev;
           n.backtraceScore = this.backtraceScore;
           return n;
@@ -17857,11 +17862,6 @@ ${t2}`);
         }
       };
       var AutoModelForSeq2SeqLM = class {
-        static modelClassMapping = {
-          "t5": T5ForConditionalGeneration,
-          "bart": BartForConditionalGeneration,
-          "whisper": WhisperForConditionalGeneration
-        };
         static async from_pretrained(modelPath, progressCallback = null) {
           let info = await seq2seqLoadModel(modelPath, progressCallback);
           let config = info[0];
@@ -17872,6 +17872,11 @@ ${t2}`);
           return new cls(...info);
         }
       };
+      __publicField(AutoModelForSeq2SeqLM, "modelClassMapping", {
+        "t5": T5ForConditionalGeneration,
+        "bart": BartForConditionalGeneration,
+        "whisper": WhisperForConditionalGeneration
+      });
       var AutoModelForCausalLM = class {
         static async from_pretrained(modelPath, progressCallback = null) {
           let [config, session] = await Promise.all([
