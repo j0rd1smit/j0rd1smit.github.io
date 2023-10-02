@@ -10,8 +10,10 @@ def build(ctx: Context) -> None:
 
 
 @task
-def dev(ctx: Context) -> None:
+def dev(ctx: Context, production_view: bool = False) -> None:
     webbrowser.open('http://localhost:1313/')
+    if production_view:
+        ctx.run("hugo server --environment production")
     ctx.run("hugo server -D")
 
 
