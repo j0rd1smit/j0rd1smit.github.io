@@ -121,5 +121,7 @@
     href="{{ (resources.Get "/favicon/favicon-16x16.png").Permalink }}"
   />
   <meta name="theme-color" content="#fff" />
-  {{ template "_internal/google_analytics.html" . }}
+  {{ if hugo.IsProduction }}
+    {{ template "_internal/google_analytics.html" . }}
+  {{ end }}
 </head>
