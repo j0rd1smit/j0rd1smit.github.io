@@ -1,15 +1,21 @@
 ---
-title: "Obsidian Copilot"
+title: "What does it take to add Copilot to Obsidian?"
 date: 2023-09-30T15:53:49+02:00
 publishdate: 2023-09-30T15:53:49+02:00
-description: "What does it take to build your version of Github Copilot? Find out here, where I explain how I built the Obsidian Copilot plugin."
-tags: []
+description: "Ever wanted to have Copilot-like completions in Obsidian? It is now possible. This blog post explains how I created the Copilot Auto Completion plugin for Obsidian."
+tags:
+  - Obsidian
+  - Copilot
+  - LLM
+  - AI
 draft: false
 math: false
 image: "/cover.png"
 use_featured_image: true
 featured_image_size: 600x
 ---
+
+
 
 Ever since I got access to GitHub Copilot, I have been truly amazed by its capabilities.
 It continuously keeps feeding me possible completions for my code and text.
@@ -62,7 +68,7 @@ ANSWER: function
 
 The text after `THOUGHT:` allows the model to reason a bit about the context around the cursor before writing the answer in the `ANSWER:` section.
 This is a prompt engineering trick called [Chain-of-Thought](https://www.promptingguide.ai/techniques/cot ).
-The idea here is that if a model explains its reasoning, it will be more likely to write a coherent answer since it give the attention mechanism more guidance.
+The idea here is that if a model explains its reasoning, it will be more likely to write a coherent answer since it gives the attention mechanism more guidance.
 For our use case, this works remarkably well.
 We are mainly interested in the `ANSWER:` section since contains the actual completion.
 Thanks to the `ANSWER:` prefix, we can easily extract this text using regex, which is exactly what we do in the plugin.
@@ -73,7 +79,7 @@ We now have a way to obtain completions from the model thanks to the system prom
 However, when I used the above system prompt, I noticed that the model often generated generic text completions independent of the cursor location.
 For example, even in Python code blocks, the model preferred to generate English text completions instead of Python code.
 This is not what we want.
-We humans expect different type of completions in different cursor locations, for example:
+We humans expect different types of completions in different cursor locations, for example:
 
 - If the cursor is inside a Python code block, we expect a completion with Python code.
 - If the cursor is inside a math block, we expect a completion with latex formulas.
@@ -111,7 +117,7 @@ If the cursor is inside a math block, we only select the few-shot examples relat
 This way, we can make the model context-aware without encoding all the context into one long system prompt.
 Allowing us to reduce the prompt length, complexity, and inference costs.
 
-TODO: image that show the dynamic prompt selection
+{{< figure src="images/few-shot-example-visual.gif" caption="Some examples of how the prompt changes dynamically based on the cursor's location." >}}
 
 Another nice side effect of this few-shot example approach is that it allows users to customize the type of completions they expect.
 Maybe a user wants the model to write in their native language?
@@ -119,6 +125,8 @@ Or the user might want the model to generate to-do list tasks in their specific 
 All they need to do is write an example input and model response for a given context, and the model will learn to generate tasks in your style.
 This makes the model very flexible and customizable to the user's needs.
 That is why the plugin allows users to edit the existing few-shot examples or add their own via the settings menu.
+
+{{< figure src="images/few-shot-examples-setting.jpg" caption="The settings menu where users can add or change few-shot examples per cursor context." >}}
 
 ## Plugin architecture
 
