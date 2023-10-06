@@ -15,13 +15,11 @@ use_featured_image: true
 featured_image_size: 600x
 ---
 
-
-
 Ever since I got access to GitHub Copilot, I have been truly amazed by its capabilities.
 It continuously keeps feeding me possible completions for my code and text.
 They might not always be perfect, but they are often good enough to be used as a starting point and prevent me from suffering from the white page syndrome.
 I'm also an avid user of Obsidian, a note-taking application, where I often encounter the same white page syndrome.
-This often resulted in me either writing my longer notes in my IDE using copilot or procrastinating and not writing the note (or blog) at all.
+This often resulted in me either writing my longer notes in my IDE using Copilot or procrastinating and not writing the note (or blog) at all.
 The engineer in me saw this as a challenge, which resulted in the [Obsidian Copilot plugin](https://obsidian.md/plugins?search=Copilot%20auto%20completion).
 Like the name suggests, this plugin adds Copilot-like auto-completion to Obsidian with the help of the OpenAI API, which looks something like this:
 
@@ -71,7 +69,7 @@ This is a prompt engineering trick called [Chain-of-Thought](https://www.prompti
 The idea here is that if a model explains its reasoning, it will be more likely to write a coherent answer since it gives the attention mechanism more guidance.
 For our use case, this works remarkably well.
 We are mainly interested in the `ANSWER:` section since contains the actual completion.
-Thanks to the `ANSWER:` prefix, we can easily extract this text using regex, which is exactly what we do in the plugin.
+Thanks to the `ANSWER:` prefix, we can extract this text using regex, which is exactly what we do in the plugin.
 
 ### Making the model context-aware
 
@@ -159,7 +157,7 @@ Depending on the event that occurred, the plugin will transition from one state 
 The big advantage of this approach is that we group all the state-specific behavior code in one place.
 For example, all the idle state-specific behavior code is grouped in the `IdleState` class.
 This code is much easier to understand and reason about than many, possibly nested, if-else statements.
-Another big advantage is that you can easily visualize the plugin's behavior in a state diagram like the one above, making it easier to explain the code's behavior to new developers.
+Another big advantage is that you can visualize the plugin's behavior in a state diagram like the one above, making it easier to explain the code's behavior to new developers.
 These things make the plugin's codebase much easier to maintain and extend.
 
 ## Wrapping up
