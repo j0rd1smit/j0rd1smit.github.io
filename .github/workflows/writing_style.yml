@@ -1,0 +1,29 @@
+name: Check Writing Style
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+    - content/**
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Get all modified markdown files
+      id: changed-files
+      uses: tj-actions/changed-files@v39
+      with:
+        files: content/**/*.md
+    - name: List all changed files
+      run: |
+        for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+        echo "$file was changed"
+        done
+    - uses: errata-ai/vale-action@reviewdog
+      if: steps.changed-files.outputs.any_changed == 'true'
+      with:
+        files: ${{ steps.changed-files.outputs.all_changed_files }}
+        args: --minAlertLevel=error
