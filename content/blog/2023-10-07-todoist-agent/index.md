@@ -17,7 +17,7 @@ This made me want to implement an LLM agent for myself.
 I also have the ideal use case for it.
 I'm a big user of [Todoist](https://todoist.com/), but like many Todoist users, I'm better at filling my Todoist inbox than cleaning it up.
 Therefore, I would like an AI assistant to help me with this.
-For example, it could do the following things for me: group similar tasks, move tasks to the correct project, or even create new ones.
+For example, it could do the following things for me: group similar tasks, move tasks to the correct project, or even create new projects if no suitable project exists.
 As you can see in the demo video below, I succeeded.
 
 {{< youtube QttrZMfdi2c >}}
@@ -26,13 +26,13 @@ Now, you might be wondering how I did this.
 It all comes down to the following questions:
 
 - How do you let LLM preform actions?
-- What actions does the agent need?
 - How do you force the agent to adhere to the REACT framework?
+- How do you parse and validate the agent's response?
 - How do you handle LLMs that makes mistakes?
 
-In this blog, I will some code snippets to explain what is happening.
-However, due to space constraints, I will not show all the code.
-If you want to see all the code, you can find it [here](https://github.com/j0rd1smit/todoist_react_agent/tree/main).
+In this blog, I will show some code snippets to explain what is happening.
+However, due to space constraints, I cannot show all the code in this blog.
+If you want to read the entire codebase, you can find it [here](https://github.com/j0rd1smit/todoist_react_agent/tree/main).
 
 ## How do you let LLM preform actions?
 
@@ -83,16 +83,20 @@ The output of this action is then fed back into the LLM as the `Observation` par
 This process can then repeat until the LLM has completed its task.
 It will then write the `Final Answer` part, this part contains the text that will be shown to the user.
 For example, "I'm done with X." and from here the conversation can continue as usual.
-Cool, we now have a way to let the LLM perform actions, but the question remains: how do you implement this?
+That is the basic idea behind the REACT framework.
+Now, let's see how we can implement this.
+{{< figure src="images/react-framework-text-example.gif" caption="TODO" >}}
 
-## TODO: better title
+## How do you force the agent to adhere to the REACT framework?
 
 When I started this project, I quickly learned that letting a LLM perform actions is not as easy as it sounds.
 Implementing the REACT framework is not that hard, but handling all the edge cases is.
 Most interestingly, all these edge cases arise if you are not explicit enough in your system prompt.
 It is just like telling a child to clean up its room.
 If you are not explicit enough, it will most likely misinterpret your instructions or, even worse, find a way to cheat.
-For example, one of my first prompts looked something like this:
+For example, one of my first prompts looked something like the prompt below.
+For example, one of my first prompts looked something like the prompt below.
+You don’t have to read it all, but it will give you an idea of how long a prompt can become if you have to explain all the rules and edge cases.
 
 ```python
 def create_system_prompt():
@@ -134,10 +138,10 @@ Just a small selection of things that went wrong:
 
 - It kept formatting the `move_task` in different ways. For example, `move_task[task_id=X, project_id=Y]`, `move_task[task_id = X, project_id = Y]`, `move_task[X, Y]`, `move_task[task=X, project=Y]`. This made parsing it rather tricky.
 - It tried to pick actions that did not exist. For example, `loop through each task in the inbox`.
+- TODO: add more examples
 - and many more...
 
 I tried to fix these issues by making the system prompt more explicit, but that was to no avail.
-I decided to take a step back and rethink my approach.
 After some reflection, I realized that code is more expressive than text.
 Therefore, I decided to define the response format as JSON schema and asked the LLM only to generate JSON that adheres to this schema.
 For example, the schema for the `move_task` action looks like this:
@@ -176,6 +180,8 @@ For example, the schema for the `move_task` action looks like this:
 }
 ```
 
+This schema is way more explicit than any natural language based explanation I could write.
+Even better, I can also add additional validation constraints like regex patterns.
 You might think that it might be way more work to create these type of schemas than to write a system prompt.
 However, thanks to the [Pydantic](https://pydantic-docs.helpmanual.io/) library, this is not the case.
 Pydantic has a `schema_json` method that automatically generates this schema for you.
@@ -197,8 +203,7 @@ class MoveTaskAction(pydantic.BaseModel):
     )
 ```
 
-I also ended up defining a JSON schema and Pydantic model for the general react response format.
-This looked something like:
+And the Pydantic model for the expected response from the LLM looks like this:
 
 ```python
 ...
@@ -219,12 +224,11 @@ class ReactResponse(pydantic.BaseModel):
         description="The next action you want to take. Make sure it is consistent with your thoughts."
     )
 ...
+# The rest of action models excluded for brevity
 ```
 
-Besides generating a more explicit schema, this approach also has the following benefits.
-Firstly, the part of the prompt I need to write is now way smaller.
-Almost, everything is now generated by Pydantic.
-I only need to write the general context part of the prompt.
+Now with these Pydantic models, I tell the LLM to only respond with JSON that adheres to this schema.
+I do this using the following system prompt:
 
 ```python
 def create_system_prompt():
@@ -243,35 +247,72 @@ def create_system_prompt():
     """
 ```
 
-## TODO
+Thanks to this change in the system prompt, the LLM stopped making the previously mentioned formatting issues. As a result, I needed to cover way fewer edge cases, allowing me to simplify my code base significantly.
+This makes me, as a developer, always very happy.
+
+## How do you parse and validate the agent's response?
+
+At this point, we have an LLM that always responds with JSON and the LLM knows that this JSON must adhere to the schema from the above Pydantic model.
+We still need to parse this JSON and extract the action the LLM wants to perform from it.
+This is where Pydantic shines.
+Pydantic's `parse_raw` function can do all the parsing and validation for us.
+If the JSON adheres to the schema, it will return an instance of the model.
+These Pydantic models work remarkably well with Python's `match` statement, allowing us to select the correct action easily.
+Within these cases, we perform the action and API call for the LLM and feed back the result as the observation.
+This results in action parsing and selecting code that looks roughly like this:
 
 ```python
-def create_system_prompt():
-    return """
-    You are a getting things done (GTD) agent.
-    You have access to multiple tools.
-    See the action in the json schema for the available tools.
-    If you have insufficient information to answer the question, you can use the tools to get more information.
-    All your answers must be in json format and follow the following schema json schema:
-    {react_model.schema()}
-    
-    If your json response asks me to preform an action, I will preform that action.
-    I will then respond with the result of that action.
+response = ReactResponse.parse_raw(response_text)
 
-    Do not write anything else than json!
-    """
+match response.action:
+    case GetAllTasksAction(type="get_all_tasks"):
+        ... # preform get_all_tasks action
+        observation = ...
+    case GetAllProjectsAction(type="get_all_projects"):
+        ... # preform get_all_projects action
+        observation = ...
+    case CreateNewProjectAction(type="create_project", name=name):
+        ... # preform create_project action
+        observation = ...
+    case GetAllInboxTasksAction(type="get_inbox_tasks"):
+        ... # preform get_inbox_tasks action
+        observation = ...
+    case MoveTaskAction(type="move_task", task_id=task_id, project_id=project_id):
+        ... # preform move_task action
+        observation = ...
+    case GiveFinalAnswerAction(type="give_final_answer", answer=answer):
+        ... # preform give_final_answer action
+        return answer
 ```
 
-Surprisingly, the default REACT system prompt leaves a lot of room for the LLM agent to make mistakes.
-For example,
-
-Surprisingly, it also leaves a lot of room for cheating.
-One time an LLM told me it wanted to preform the action: `Loop through all tasks in the inbox and move them`.
-It seems like a logical higher level goal, but it was not one of the actions I defined in the system prompt.
+Inside these `case` statements, we execute the action the LLM wants to perform.
+For example, if the LLM wants to move a task, we use the `task_id` and `project_id` attributes from the `MoveTaskAction` object to perform the API call for the LLM.
+We create an observation for the LLM based on what happens during this API call.
+In the case of the `move_task` action, this observation is a success or failure message.
+In the case of data-gathering actions like `get_all_tasks` and `get_all_projects`, the observation is a JSON list that contains the requested data.
+We then send this observation to the LLM so that it can start generating its subsequent response, which brings us back to the start of this code.
+We keep looping over this code until the LLM performs the `give_final_answer` action. (Or until another early stopping condition is met, like a maximum number of actions or a time limit.)
+We then break the loop and return the message the LLM wants to send to the user, allowing the conversation to continue.
 
 ## How do you handle LLMs that makes mistakes?
 
-TODO
+We now have an LLM that can perform actions autonomously and we found a way to prevent it from making formatting mistakes.
+However, these are not the only mistakes an LLM can make.
+The LLM can make logical mistakes as well.
+For example, it might:
+
+- Try to create a project with a name that already exists.
+- Try to move a task to a project that does not exist.
+- Try to move a task with a `task_id` that does not exist.
+- Etc.
+
+Handling these mistakes is tricky.
+We could try to check for these mistakes but we end-up replicating all the (input-validation) logic in the Todoist API.
+Instead, a more interesting approach is to just try to perform the action.
+If an exception occurs, we catch it and feed the exception message back to the LLM as the observation.
+This will automatically inform the LLM that it made a mistake and give all the information it needs to correct its mistake.
+
+...
 
 ## Wrap up
 
