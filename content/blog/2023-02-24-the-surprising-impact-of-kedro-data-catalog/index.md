@@ -61,7 +61,7 @@ All this configuration to be able to read and write data sounds like a lot of wo
 Thanks to the data catalog, we can load or save our data using declarative rather than imperative code.
 In declarative code, you only tell the computer what to do instead of how to do it.
 This change simplifies the code you need to write significantly.
-For example, loading and saving a dataset becomes as simple as:
+For example, loading and saving a dataset becomes as:
 
 ```python
 your_dataset = catalog.load("<dataset_name>")
