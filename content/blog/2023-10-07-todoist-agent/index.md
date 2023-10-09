@@ -1,6 +1,6 @@
 ---
 title: "What does it take to let ChatGPT manage my Todoist tasks?"
-description: ""
+description: "Have you ever wondered what it takes to implement an AI assistant that can manage your Todoist inbox? In this blog, I will show you how I implemented my LLM-based Todoist agent using the REACT framework."
 date: 2023-10-07T14:14:45+02:00
 publishdate: 2023-10-07T14:14:45+02:00
 tags: []
@@ -41,22 +41,19 @@ The aim of this project was to have an LLM with whom we could have a conversatio
 For example, if we tell the LLM to clear my inbox, it should tell me it is on it and start performing this task.
 Once it is done, it should tell me, and we continue our conversation.
 This sounds simple, but it differs from the typical chat process we are used to.
-The process now consists of two parts: the conversation part and the background process part.
-The conversation part is similar to the chat interface of ChatGPT.
-However, the background process part is new.
-In this part, the LLM is autonomously reasoning about the task we gave it and performing actions to complete it.
-These actions continuously give it new information, which informs it about its progress.
+The process now consists of two parts: the conversation part and a new background process part.
+In this background part, the LLM autonomously selects and performs actions that help it to complete the task we gave it.
 You can think about this process as something like this:
 
-{{< figure src="images/outline-of-desired-process.gif" caption="TODO" >}}
+{{< figure src="images/outline-of-desired-process.gif" caption="An example of the workflow of an autonomous agent that performs tasks given to it by the user." >}}
 
 LLMs cannot do this by default since they cannot perform actions independently.
 They can only respond to us with generated text.
 However, if you ever let an LLM help you debug a program, you know it can tell you what action you should take.
 Typically, you perform this action for the LLM; if it does not yet work, you provide it with the resulting error message.
-You repeat this process until you solved the problem.
-This process works but requires a lot of effort from the user.
-Therefore, we want to automate this process.
+You repeat this process until you solve the problem.
+In this scenario, you act similarly to the background process from the above image.
+This approach works, but we want something more autonomous.
 To do this, we need to let the LLM respond in a parsable format that tells us if it wants to perform a particular action.
 A Python script can then parse this response, perform the action for the LLM, and feed the result back into the LLM.
 This process allows the LLM to perform actions autonomously.
@@ -85,7 +82,7 @@ It will then write the `Final Answer` part, this part contains the text that wil
 For example, "I'm done with X." and from here the conversation can continue as usual.
 That is the basic idea behind the REACT framework.
 Now, let's see how we can implement this.
-{{< figure src="images/react-framework-text-example.gif" caption="TODO" >}}
+{{< figure src="images/react-framework-text-example.gif" caption="The same workflow as above but now with the REACT framework." >}}
 
 ## How do you force the agent to adhere to the REACT framework?
 
@@ -94,7 +91,6 @@ Implementing the REACT framework is not that hard, but handling all the edge cas
 Most interestingly, all these edge cases arise if you are not explicit enough in your system prompt.
 It is just like telling a child to clean up its room.
 If you are not explicit enough, it will most likely misinterpret your instructions or, even worse, find a way to cheat.
-For example, one of my first prompts looked something like the prompt below.
 For example, one of my first prompts looked something like the prompt below.
 You don’t have to read it all, but it will give you an idea of how long a prompt can become if you have to explain all the rules and edge cases.
 
@@ -136,9 +132,9 @@ You might think the prompt is rather explicit and should work.
 Sadly, the LLM found multiple ways to misinterpret this prompt and make mistakes.
 Just a small selection of things that went wrong:
 
-- It kept formatting the `move_task` in different ways. For example, `move_task[task_id=X, project_id=Y]`, `move_task[task_id = X, project_id = Y]`, `move_task[X, Y]`, `move_task[task=X, project=Y]`. This made parsing it rather tricky.
+- The LLM kept formatting the `move_task` in different ways. For example, `move_task[task_id=X, project_id=Y]`, `move_task[task_id = X, project_id = Y]`, `move_task[X, Y]`, `move_task[task=X, project=Y]`. This made parsing it rather tricky.
 - It tried to pick actions that did not exist. For example, `loop through each task in the inbox`.
-- TODO: add more examples
+- The LLM kept apologizing for making mistakes. Due to these apologies, the format of the response no longer adhered to the REACT framework, resulting in parsing failures (and more complex code to handle these failures).
 - and many more...
 
 I tried to fix these issues by making the system prompt more explicit, but that was to no avail.
@@ -286,7 +282,7 @@ match response.action:
 ```
 
 Inside these `case` statements, we execute the action the LLM wants to perform.
-For example, if the LLM wants to move a task, we use the `task_id` and `project_id` attributes from the `MoveTaskAction` object to perform the API call for the LLM.
+For example, if the LLM wants to move a task, we use the `task_id` and `project_id` attributes from the `MoveTaskAction` object to perform the [API call](https://github.com/j0rd1smit/todoist_react_agent/blob/d9abae8907403020e368c9135446cfe1df90ae1c/todoist_react_agent/todoist_action_toolkit.py#L87C9-L87C18) for the LLM.
 We create an observation for the LLM based on what happens during this API call.
 In the case of the `move_task` action, this observation is a success or failure message.
 In the case of data-gathering actions like `get_all_tasks` and `get_all_projects`, the observation is a JSON list that contains the requested data.
@@ -307,13 +303,49 @@ For example, it might:
 - Etc.
 
 Handling these mistakes is tricky.
-We could try to check for these mistakes but we end-up replicating all the (input-validation) logic in the Todoist API.
-Instead, a more interesting approach is to just try to perform the action.
+We could check for these mistakes, but we likely end up replicating all the (input-validation) logic in the Todoist API.
+Instead, a more exciting and less complex approach is just trying to perform the action.
 If an exception occurs, we catch it and feed the exception message back to the LLM as the observation.
-This will automatically inform the LLM that it made a mistake and give all the information it needs to correct its mistake.
+This approach will automatically inform the LLM that it made a mistake and give all the necessary information to correct it.
+The code for this approach looks roughly like this:
 
+```python
 ...
+try:
+    ...
+    match response.action:
+        ...
+except Exception as e:
+    observation = f"""
+Your response caused the following error:
+{e}
+Please try again and avoid this error.
+    """
+...
+```
+
+For example, in the image below, you see the LLM is a bit eager and tries to make a new project but there is already a project with that name.
+This results in an exception, which is then fed back to the LLM as the observation.
+The LLM reasons about this exception and then decided it should try to obtain all the projects first using the `get_all_projects` action.
+
+{{< figure src="images/error-recover-example2.jpg" caption="An example of an LLM making a mistake and recovering from it based on the exception message." >}}
+
+I find this fascinating.
+The LLM recognized its mistake and devised a solution to fix it.
+So, this approach works remarkably well.
+It works even better if you have exception messages explaining what went wrong and suggesting how to fix it.
+These things are already best practices for human-intended exception messages.
+Thus, I find it funny that these best practices also transfer to the LLM-agent domain.
 
 ## Wrap up
 
-TODO
+You now have a basic understanding of the REACT framework and how I implemented it in my Todoist agent.
+This proof of concept project was very insightful for me.
+What surprised me the most during this project was that the bugs and issues I encountered are remarkably differed from ordinary software development bugs.
+These bugs felt more like miscommunications between humans than actual software bugs.
+This observation makes me wonder if there are other inspirations we can get from the communication field and apply them to the LLM agent field.
+That might be something to explore in a future project.
+Anyway, I hope this blog inspired you to try the REACT framework for yourself.
+Implementing and playing around with these types of agents is remarkably fun.
+If you want inspiration from my code base, you can find it [here](https://github.com/j0rd1smit/todoist_react_agent).
+Good luck, and have fun!
