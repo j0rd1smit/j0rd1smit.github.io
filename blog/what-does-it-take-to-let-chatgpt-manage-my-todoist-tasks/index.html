@@ -1,0 +1,252 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=generator content="Hugo 0.112.3"><title>What does it take to let ChatGPT manage my Todoist tasks? | Jordi Smit</title><meta name=description content="Have you ever wondered what it takes to implement an AI assistant that can manage your Todoist inbox? In this blog, I will show you how I implemented my LLM-based Todoist agent using the REACT framework."><meta name=keywords content="Machine leanring,Jordi Smit,j0rd1smit,Machine Learning engineer,Data Science,deep learning"><link rel=canonical href=https://jordismit.com/blog/what-does-it-take-to-let-chatgpt-manage-my-todoist-tasks/><meta property="og:type" content="website"><meta property="og:title" content="What does it take to let ChatGPT manage my Todoist tasks? | Jordi Smit"><meta property="og:description" content="Have you ever wondered what it takes to implement an AI assistant that can manage your Todoist inbox? In this blog, I will show you how I implemented my LLM-based Todoist agent using the REACT framework."><meta property="og:site_name" content="Jordi Smit"><meta property="og:url" content="https://jordismit.com/blog/what-does-it-take-to-let-chatgpt-manage-my-todoist-tasks/"><meta property="og:locale" content="en"><meta property="og:image" content="https://jordismit.com/blog/what-does-it-take-to-let-chatgpt-manage-my-todoist-tasks/images/cover.jpg"><meta property="og:image:secure_url" content="https://jordismit.com/blog/what-does-it-take-to-let-chatgpt-manage-my-todoist-tasks/images/cover.jpg"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="What does it take to let ChatGPT manage my Todoist tasks?"><meta name=twitter:description content="Have you ever wondered what it takes to implement an AI assistant that can manage your Todoist inbox? In this blog, I will show you how I implemented my LLM-based Todoist agent using the REACT framework."><link rel=stylesheet href=https://jordismit.com/css/bootstrap.min.7633b7c0c97d19e682feee8afa2738523fcb2a14544a550572caeecd2eefe66b.css integrity="sha256-djO3wMl9GeaC/u6K+ic4Uj/LKhRUSlUFcsruzS7v5ms="><link rel=stylesheet href=https://jordismit.com/css/goolge-fonts.min.59f98c25da594b2a690835ae556add4bd6b87b555c2be822e4f8d7ed2ac28c55.css integrity="sha256-WfmMJdpZSyppCDWuVWrdS9a4e1VcK+gi5PjX7SrCjFU="><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.0.13/css/all.css integrity=sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp crossorigin=anonymous><link rel=stylesheet href=https://jordismit.com/css/medium.min.edbfa243cc780784f7bc1e894ffbbe0f61381ecc59ea59a8e9736b0adbf727c0.css integrity="sha256-7b+iQ8x4B4T3vB6JT/u+D2E4HsxZ6lmo6XNrCtv3J8A="><link rel=stylesheet href=https://jordismit.com/css/additional.min.df77e97a7aaac1ae6e2eb40724704e1fe7702fe8e085c5bc4b21c2b013c90307.css integrity="sha256-33fpenqqwa5uLrQHJHBOH+dwL+jghcW8SyHCsBPJAwc="><link rel=icon type=image/x-icon href=https://jordismit.com/favicon/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=https://jordismit.com/favicon/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://jordismit.com/favicon/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://jordismit.com/favicon/favicon-16x16.png><meta name=theme-color content="#fff"><script async src="https://www.googletagmanager.com/gtag/js?id=G-YZP2SLQQK7"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-YZP2SLQQK7",{anonymize_ip:!1})}</script></head><body class="d-flex flex-column min-vh-100"><nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down"><div class="container pr-0"><a class=navbar-brand href=https://jordismit.com/><span style=font-family:Righteous>Jordi Smit</span></a>
+<button class=navbar-toggler type=button data-toggle=collapse data-target=#navbarMediumish aria-controls=navbarSupportedContent aria-expanded=false aria-label="Toggle navigation">
+<span class=navbar-toggler-icon></span></button><div class="collapse navbar-collapse" id=navbarMediumish><ul class="navbar-nav ms-auto"><li class=nav-item><a class=nav-link href=/blog>Blog</a></li><li class=nav-item><a class=nav-link href=/til>TIL</a></li><li class=nav-item><a class=nav-link href=/cheat-sheets>Cheat-sheets</a></li><li class=nav-item><a class=nav-link href=/about>About Me</a></li></ul></div></div></nav><div class=site-content><div class=container><div class=main-content><div class=container><div class=row><div class="col-md-2 pl-0"><div class="share sticky-top sticky-top-offset"><p>Share</p><ul><li class="ml-1 mr-1"><a target=_blank href="https://twitter.com/intent/tweet?text=What%20does%20it%20take%20to%20let%20ChatGPT%20manage%20my%20Todoist%20tasks%3f&url=https%3a%2f%2fjordismit.com%2fblog%2fwhat-does-it-take-to-let-chatgpt-manage-my-todoist-tasks%2f" onclick='return window.open(this.href,"twitter-share","width=550,height=435"),!1'><i class="fab fa-twitter"></i></a></li><li class="ml-1 mr-1"><a target=_blank href="https://facebook.com/sharer.php?u=https%3a%2f%2fjordismit.com%2fblog%2fwhat-does-it-take-to-let-chatgpt-manage-my-todoist-tasks%2f" onclick='return window.open(this.href,"facebook-share","width=550,height=435"),!1'><i class="fab fa-facebook-f"></i></a></li><li class="ml-1 mr-1"><a target=_blank href="https://www.linkedin.com/sharing/share-offsite/?url=https%3a%2f%2fjordismit.com%2fblog%2fwhat-does-it-take-to-let-chatgpt-manage-my-todoist-tasks%2f" onclick='return window.open(this.href,"linkedin-share","width=550,height=435"),!1'><i class="fab fa-linkedin"></i></a></li></ul></div></div><div class="col-md-9 flex-first flex-md-unordered"><div class=mainheading><div class="row post-top-meta"><div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0 md-nopad-right"><a href=/about><img class=author-thumb src=https://jordismit.com/media/images/author_hu25d333fcded103db2f52f7476cb1420a_204682_250x0_resize_q75_box.jpg alt=Author></a></div><div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-start md-nopad-left"><a href=/about class=link-dark>Jordi
+Smit</a><br><span class=author-description>Machine Learning Engineer<br>17 Sep 2023
+<i class="far fa-clock clock"></i>
+14 min read</span></div></div><h1 class=posttitle>What does it take to let ChatGPT manage my Todoist tasks?</h1></div><div class=post-featured-image><img class=img-fluid src=https://jordismit.com/blog/what-does-it-take-to-let-chatgpt-manage-my-todoist-tasks/images/cover.jpg alt="thumbnail for this post"></div><div class=article-post><p>I have always been fascinated with the idea of AI-based assistants like Jarvis and Friday.
+Recently, this fascination was rekindled when I read about the <a href=https://github.com/yoheinakajima/babyagi>Baby AGI project</a>.
+This made me want to implement an LLM agent for myself.
+I also have the ideal use case for it.
+I&rsquo;m a big user of <a href=https://todoist.com/>Todoist</a>, but like many Todoist users, I&rsquo;m better at filling my Todoist inbox than cleaning it up.
+Therefore, I would like an AI assistant to help me with this.
+For example, it could do the following things for me: group similar tasks, move tasks to the correct project, or even create new projects if no suitable project exists.
+As you can see in the demo video below, I succeeded.</p><div style=position:relative;padding-bottom:56.25%;height:0;overflow:hidden><iframe src=https://www.youtube.com/embed/QttrZMfdi2c style=position:absolute;top:0;left:0;width:100%;height:100%;border:0 allowfullscreen title="YouTube Video"></iframe></div><p>Now, you might be wondering how I did this.
+It all comes down to the following questions:</p><ul><li>How do you let LLM preform actions?</li><li>How do you force the agent to adhere to the REACT framework?</li><li>How do you parse and validate the agent&rsquo;s response?</li><li>How do you handle LLMs that makes mistakes?</li></ul><p>In this blog, I will show some code snippets to explain what is happening.
+However, due to space constraints, I cannot show all the code in this blog.
+If you want to read the entire codebase, you can find it <a href=https://github.com/j0rd1smit/todoist_react_agent/tree/main>here</a>.</p><h2 id=how-do-you-let-llm-preform-actions>How do you let LLM preform actions?</h2><p>Before diving into the implementation details, we must first discuss some background information about how to give LLMs the ability to perform actions.
+The aim of this project was to have an LLM with whom we could have a conversation, and if, during this conversation, we tell the LLM to perform a particular task, it should be able to do so.
+For example, if we tell the LLM to clear my inbox, it should tell me it is on it and start performing this task.
+Once it is done, it should tell me, and we continue our conversation.
+This sounds simple, but it differs from the typical chat process we are used to.
+The process now consists of two parts: the conversation part and a new background process part.
+In this background part, the LLM autonomously selects and performs actions that help it to complete the task we gave it.
+You can think about this process as something like this:</p><figure><img src=images/outline-of-desired-process.gif alt="An example of the workflow of an autonomous agent that performs tasks given to it by the user."><figcaption><p>An example of the workflow of an autonomous agent that performs tasks given to it by the user.</p></figcaption></figure><p>LLMs cannot do this by default since they cannot perform actions independently.
+They can only respond to us with generated text.
+However, if you ever let an LLM help you debug a program, you know it can tell you what action you should take.
+Typically, you perform this action for the LLM; if it does not yet work, you provide it with the resulting error message.
+You repeat this process until you solve the problem.
+In this scenario, you act similarly to the background process from the above image.
+This approach works, but we want something more autonomous.
+To do this, we need to let the LLM respond in a parsable format that tells us if it wants to perform a particular action.
+A Python script can then parse this response, perform the action for the LLM, and feed the result back into the LLM.
+This process allows the LLM to perform actions autonomously.
+This prompting technique is called <a href=https://www.promptingguide.ai/techniques/react>REACT</a> and is the basis of this project.
+The system prompt of this framework looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>Use the following format:
+</span></span><span style=display:flex><span>Thought: you should always think about what to do
+</span></span><span style=display:flex><span>Action: the action to take, should be one of [{tool_names}]
+</span></span><span style=display:flex><span>Observation: the result of the action
+</span></span><span style=display:flex><span>... (this Thought/Action/Action Input/Observation can repeat N times)
+</span></span><span style=display:flex><span>Thought: I now know the final answer
+</span></span><span style=display:flex><span>Final Answer: the final answer to the original input question
+</span></span></code></pre></div><p>So, the LLM&rsquo;s response now consists of a <code>Thought</code> and <code>Action</code> part.
+The <code>Thought</code> part is where the LLM can explain its thought process, allowing it to reason about its progress and previous observations.
+This part is based on the <a href=https://www.promptingguide.ai/techniques/chain-of-thought>Chain-of-Thought</a> technique and helps to focus the attention of the LLM.
+The <code>Action</code> part lets the LLM tell us what action it wants to perform.
+The LLM still cannot perform this action independently, but at least it can now indicate that it wants to perform a particular action.
+A Python script can then parse this action and perform it for the LLM.
+The output of this action is then fed back into the LLM as the <code>Observation</code> part.
+This process can then repeat until the LLM has completed its task.
+It will then write the <code>Final Answer</code> part, this part contains the text that will be shown to the user.
+For example, &ldquo;I&rsquo;m done with X.&rdquo; and from here the conversation can continue as usual.
+That is the basic idea behind the REACT framework.
+Now, let&rsquo;s see how we can implement this.<figure><img src=images/react-framework-text-example.gif alt="The same workflow as above but now with the REACT framework."><figcaption><p>The same workflow as above but now with the REACT framework.</p></figcaption></figure></p><h2 id=how-do-you-force-the-agent-to-adhere-to-the-react-framework>How do you force the agent to adhere to the REACT framework?</h2><p>When I started this project, I quickly learned that letting a LLM perform actions is not as easy as it sounds.
+Implementing the REACT framework is not that hard, but handling all the edge cases is.
+Most interestingly, all these edge cases arise if you are not explicit enough in your system prompt.
+It is just like telling a child to clean up its room.
+If you are not explicit enough, it will most likely misinterpret your instructions or, even worse, find a way to cheat.
+For example, one of my first prompts looked something like the prompt below.
+You don’t have to read it all, but it will give you an idea of how long a prompt can become if you have to explain all the rules and edge cases.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>create_system_prompt</span>():
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    You are a getting things done (GTD) ai assistant.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    You run in a loop of Thought, Action, Action Input, Observation.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    At the end of the loop you output an Answer to the question the user asked in his message.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Use the following format:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Thought: here you describe your thoughts about process of answering the question.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Action: the action you want to take next, this must be one of the following: get_all_tasks, get_inbox_tasks or get_all_projects, move_task, create_project.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Observation: the result of the action
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    .. (this Thought/Action/Observation can repeat N times)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Thought: I now know the final answer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Final Answer: the final answer to the original input question
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Your available actions are:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - get_all_tasks: Use this when you want to get all the tasks. Return format json list of tasks.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - get_inbox_tasks: Use this get all open tasks in the inbox. Return format json list of tasks.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - get_all_projects: Use this when you want to get all the projects. Return format json list of projects.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - move_task[task_id=X, project_id=Y]: Use this if you want to move task X to project Y. Returns a success or failure message.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - create_project[name=X]: Use this if you want to create a project with name X. Returns a success or failure message.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Tasks have the following attributes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - id: a unique id for the task. Example: 123456789. This is unique per task.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - description: a string describing the task. Example: &#39;Do the dishes&#39;. This is unique per task.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - created: a natural language description of when the task was created. Example: &#39;2 days ago&#39;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - project: the name of the project the task is in. Example: &#39;Do groceries&#39;. All tasks belong to a project.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Projects have the following attributes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - id: a unique id for the project. Example: 123456789. This is unique per project.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - name: a string describing the project. Example: &#39;Do groceries&#39;. This is unique per project.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - context: a string describing the context of the project. Example: &#39;Home&#39;. Contexts are unique and each project belongs to a context.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>
+</span></span></code></pre></div><p>You might think the prompt is rather explicit and should work.
+Sadly, the LLM found multiple ways to misinterpret this prompt and make mistakes.
+Just a small selection of things that went wrong:</p><ul><li>The LLM kept formatting the <code>move_task</code> in different ways. For example, <code>move_task[task_id=X, project_id=Y]</code>, <code>move_task[task_id = X, project_id = Y]</code>, <code>move_task[X, Y]</code>, <code>move_task[task=X, project=Y]</code>. This made parsing it rather tricky.</li><li>It tried to pick actions that did not exist. For example, <code>loop through each task in the inbox</code>.</li><li>The LLM kept apologizing for making mistakes. Due to these apologies, the format of the response no longer adhered to the REACT framework, resulting in parsing failures (and more complex code to handle these failures).</li><li>and many more&mldr;</li></ul><p>I tried to fix these issues by making the system prompt more explicit, but that was to no avail.
+After some reflection, I realized that code is more expressive than text.
+Therefore, I decided to define the response format as JSON schema and asked the LLM only to generate JSON that adheres to this schema.
+For example, the schema for the <code>move_task</code> action looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;MoveTaskAction&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;description&#34;</span>: <span style=color:#e6db74>&#34;Use this to move a task to a project.&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;object&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;properties&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;type&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;Type&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;enum&#34;</span>: [
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;move_task&#34;</span>
+</span></span><span style=display:flex><span>      ],
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;string&#34;</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;task_id&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;Task Id&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;description&#34;</span>: <span style=color:#e6db74>&#34;The task id obtained from the get_all_tasks or get_all_inbox_tasks action.&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;pattern&#34;</span>: <span style=color:#e6db74>&#34;^[0-9]+$&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;string&#34;</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;project_id&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;title&#34;</span>: <span style=color:#e6db74>&#34;Project Id&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;description&#34;</span>: <span style=color:#e6db74>&#34;The project id obtained from the get_all_projects action.&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;pattern&#34;</span>: <span style=color:#e6db74>&#34;^[0-9]+$&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span>: <span style=color:#e6db74>&#34;string&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;required&#34;</span>: [
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;type&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;task_id&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;project_id&#34;</span>
+</span></span><span style=display:flex><span>  ]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This schema is way more explicit than any natural language based explanation I could write.
+Even better, I can also add additional validation constraints like regex patterns.
+You might think that it might be way more work to create these type of schemas than to write a system prompt.
+However, thanks to the <a href=https://pydantic-docs.helpmanual.io/>Pydantic</a> library, this is not the case.
+Pydantic has a <code>schema_json</code> method that automatically generates this schema for you.
+So, in practice you will only write the following code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MoveTaskAction</span>(pydantic<span style=color:#f92672>.</span>BaseModel):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;Use this to move a task to a project.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    type: Literal[<span style=color:#e6db74>&#34;move_task&#34;</span>]
+</span></span><span style=display:flex><span>    task_id: str <span style=color:#f92672>=</span> pydantic<span style=color:#f92672>.</span>Field(
+</span></span><span style=display:flex><span>        description<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;The task id obtained from the&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>+</span> <span style=color:#e6db74>&#34; get_all_tasks or get_all_inbox_tasks action.&#34;</span>,
+</span></span><span style=display:flex><span>        regex<span style=color:#f92672>=</span><span style=color:#e6db74>r</span><span style=color:#e6db74>&#34;^[0-9]+$&#34;</span>,
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    project_id: str <span style=color:#f92672>=</span> pydantic<span style=color:#f92672>.</span>Field(
+</span></span><span style=display:flex><span>        description<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;The project id obtained from the get_all_projects action.&#34;</span>,
+</span></span><span style=display:flex><span>        regex<span style=color:#f92672>=</span><span style=color:#e6db74>r</span><span style=color:#e6db74>&#34;^[0-9]+$&#34;</span>,
+</span></span><span style=display:flex><span>    )
+</span></span></code></pre></div><p>And the Pydantic model for the expected response from the LLM looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ReactResponse</span>(pydantic<span style=color:#f92672>.</span>BaseModel):
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#34;&#34;&#34;The expected response from the agent.&#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    thought: str <span style=color:#f92672>=</span> pydantic<span style=color:#f92672>.</span>Field(
+</span></span><span style=display:flex><span>        description<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Here you write your plan to answer the question. You can also write here your interpretation of the observations and progress you have made so far.&#34;</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span>    action: Union[
+</span></span><span style=display:flex><span>        GetAllTasksAction,
+</span></span><span style=display:flex><span>        GetAllProjectsAction,
+</span></span><span style=display:flex><span>        CreateNewProjectAction,
+</span></span><span style=display:flex><span>        GetAllInboxTasksAction,
+</span></span><span style=display:flex><span>        MoveTaskAction,
+</span></span><span style=display:flex><span>        GiveFinalAnswerAction,
+</span></span><span style=display:flex><span>    ] <span style=color:#f92672>=</span> pydantic<span style=color:#f92672>.</span>Field(
+</span></span><span style=display:flex><span>        description<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;The next action you want to take. Make sure it is consistent with your thoughts.&#34;</span>
+</span></span><span style=display:flex><span>    )
+</span></span><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># The rest of action models excluded for brevity</span>
+</span></span></code></pre></div><p>Now with these Pydantic models, I tell the LLM to only respond with JSON that adheres to this schema.
+I do this using the following system prompt:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>create_system_prompt</span>():
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    You are a getting things done (GTD) agent.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    You have access to multiple tools.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    See the action in the json schema for the available tools.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    If you have insufficient information to answer the question, you can use the tools to get more information.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    All your answers must be in json format and follow the following schema json schema:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    </span><span style=color:#e6db74>{</span>ReactResponse<span style=color:#f92672>.</span>schema()<span style=color:#e6db74>}</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    If your json response asks me to preform an action, I will preform that action.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    I will then respond with the result of that action.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    Do not write anything else than json!
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>
+</span></span></code></pre></div><p>Thanks to this change in the system prompt, the LLM stopped making the previously mentioned formatting issues. As a result, I needed to cover way fewer edge cases, allowing me to simplify my code base significantly.
+This makes me, as a developer, always very happy.</p><h2 id=how-do-you-parse-and-validate-the-agents-response>How do you parse and validate the agent&rsquo;s response?</h2><p>At this point, we have an LLM that always responds with JSON and the LLM knows that this JSON must adhere to the schema from the above Pydantic model.
+We still need to parse this JSON and extract the action the LLM wants to perform from it.
+This is where Pydantic shines.
+Pydantic&rsquo;s <code>parse_raw</code> function can do all the parsing and validation for us.
+If the JSON adheres to the schema, it will return an instance of the model.
+These Pydantic models work remarkably well with Python&rsquo;s <code>match</code> statement, allowing us to select the correct action easily.
+Within these cases, we perform the action and API call for the LLM and feed back the result as the observation.
+This results in action parsing and selecting code that looks roughly like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>response <span style=color:#f92672>=</span> ReactResponse<span style=color:#f92672>.</span>parse_raw(response_text)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>match</span> response<span style=color:#f92672>.</span>action:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>case</span> GetAllTasksAction(type<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;get_all_tasks&#34;</span>):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span> <span style=color:#75715e># preform get_all_tasks action</span>
+</span></span><span style=display:flex><span>        observation <span style=color:#f92672>=</span> <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>case</span> GetAllProjectsAction(type<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;get_all_projects&#34;</span>):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span> <span style=color:#75715e># preform get_all_projects action</span>
+</span></span><span style=display:flex><span>        observation <span style=color:#f92672>=</span> <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>case</span> CreateNewProjectAction(type<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;create_project&#34;</span>, name<span style=color:#f92672>=</span>name):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span> <span style=color:#75715e># preform create_project action</span>
+</span></span><span style=display:flex><span>        observation <span style=color:#f92672>=</span> <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>case</span> GetAllInboxTasksAction(type<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;get_inbox_tasks&#34;</span>):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span> <span style=color:#75715e># preform get_inbox_tasks action</span>
+</span></span><span style=display:flex><span>        observation <span style=color:#f92672>=</span> <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>case</span> MoveTaskAction(type<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;move_task&#34;</span>, task_id<span style=color:#f92672>=</span>task_id, project_id<span style=color:#f92672>=</span>project_id):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span> <span style=color:#75715e># preform move_task action</span>
+</span></span><span style=display:flex><span>        observation <span style=color:#f92672>=</span> <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>case</span> GiveFinalAnswerAction(type<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;give_final_answer&#34;</span>, answer<span style=color:#f92672>=</span>answer):
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span> <span style=color:#75715e># preform give_final_answer action</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> answer
+</span></span></code></pre></div><p>Inside these <code>case</code> statements, we execute the action the LLM wants to perform.
+For example, if the LLM wants to move a task, we use the <code>task_id</code> and <code>project_id</code> attributes from the <code>MoveTaskAction</code> object to perform the <a href=https://github.com/j0rd1smit/todoist_react_agent/blob/d9abae8907403020e368c9135446cfe1df90ae1c/todoist_react_agent/todoist_action_toolkit.py#L87C9-L87C18>API call</a> for the LLM.
+We create an observation for the LLM based on what happens during this API call.
+In the case of the <code>move_task</code> action, this observation is a success or failure message.
+In the case of data-gathering actions like <code>get_all_tasks</code> and <code>get_all_projects</code>, the observation is a JSON list that contains the requested data.
+We then send this observation to the LLM so that it can start generating its subsequent response, which brings us back to the start of this code.
+We keep looping over this code until the LLM performs the <code>give_final_answer</code> action. (Or until another early stopping condition is met, like a maximum number of actions or a time limit.)
+We then break the loop and return the message the LLM wants to send to the user, allowing the conversation to continue.</p><h2 id=how-do-you-handle-llms-that-makes-mistakes>How do you handle LLMs that makes mistakes?</h2><p>We now have an LLM that can perform actions autonomously and we found a way to prevent it from making formatting mistakes.
+However, these are not the only mistakes an LLM can make.
+The LLM can make logical mistakes as well.
+For example, it might:</p><ul><li>Try to create a project with a name that already exists.</li><li>Try to move a task to a project that does not exist.</li><li>Try to move a task with a <code>task_id</code> that does not exist.</li><li>Etc.</li></ul><p>Handling these mistakes is tricky.
+We could check for these mistakes, but we likely end up replicating all the (input-validation) logic in the Todoist API.
+Instead, a more exciting and less complex approach is just trying to perform the action.
+If an exception occurs, we catch it and feed the exception message back to the LLM as the observation.
+This approach will automatically inform the LLM that it made a mistake and give all the necessary information to correct it.
+The code for this approach looks roughly like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>match</span> response<span style=color:#f92672>.</span>action:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
+</span></span><span style=display:flex><span>    observation <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Your response caused the following error:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74></span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>Please try again and avoid this error.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span></code></pre></div><p>For example, in the image below, you see the LLM is a bit eager and tries to make a new project but there is already a project with that name.
+This results in an exception, which is then fed back to the LLM as the observation.
+The LLM reasons about this exception and then decided it should try to obtain all the projects first using the <code>get_all_projects</code> action.</p><figure><img src=images/error-recover-example2.jpg alt="An example of an LLM making a mistake and recovering from it based on the exception message."><figcaption><p>An example of an LLM making a mistake and recovering from it based on the exception message.</p></figcaption></figure><p>I find this fascinating.
+The LLM recognized its mistake and devised a solution to fix it.
+So, this approach works remarkably well.
+It works even better if you have exception messages explaining what went wrong and suggesting how to fix it.
+These things are already best practices for human-intended exception messages.
+Thus, I find it funny that these best practices also transfer to the LLM-agent domain.</p><h2 id=wrap-up>Wrap up</h2><p>You now have a basic understanding of the REACT framework and how I implemented it in my Todoist agent.
+This proof of concept project was very insightful for me.
+What surprised me the most during this project was that the bugs and issues I encountered are remarkably differed from ordinary software development bugs.
+These bugs felt more like miscommunications between humans than actual software bugs.
+This observation makes me wonder if there are other inspirations we can get from the communication field and apply them to the LLM agent field.
+That might be something to explore in a future project.
+Anyway, I hope this blog inspired you to try the REACT framework for yourself.
+Implementing and playing around with these types of agents is remarkably fun.
+If you want inspiration from my code base, you can find it <a href=https://github.com/j0rd1smit/todoist_react_agent>here</a>.
+Good luck, and have fun!</p></div><div class=after-post-tags><ul class=tags></ul></div><div class="row PageNavigation d-flex justify-content-between font-weight-bold"><a class="d-block col-md-6" href=https://jordismit.com/blog/what-does-it-take-to-add-copilot-to-obsidian/>&#171; What does it take to add Copilot to Obsidian?</a>
+<a class="d-block col-md-6 text-lg-right" href=https://jordismit.com/blog/practicing-your-dbt-skills-locally-with-duckdb/>Practicing your DBT skills locally with DuckDB &#187;</a><div class=clearfix></div></div></div></div></div></div></div></div><footer class="footer mt-auto"><div class=container><div class=row><div class="col-md-12 col-sm-612 text-center">&copy; Copyright
+Jordi Smit - All rights reserved</div></div></div></footer><script async src=https://jordismit.com/js/mediumish.min.f5bb3d8c672aaed326977e05f0187a6b8b165e033478c286160ebac554991ee1.js integrity="sha256-9bs9jGcqrtMml34F8Bh6a4sWXgM0eMKGFg66xVSZHuE="></script></body></html>
