@@ -1,7 +1,7 @@
 ---
 title: "Practicing your DBT skills locally with DuckDB"
-date: 2023-10-06T16:26:34+02:00
-publishdate: 2023-10-06T16:26:34+02:00
+date: 2023-08-21T16:26:34+02:00
+publishdate: 2023-08-21T16:26:34+02:00
 description: "Want to practice your DBT skills but don't have access to a data warehouse? In this post, I will show you how to run DBT without the for a cloud based data warehouse."
 tags:
 - dbt

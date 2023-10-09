@@ -1,8 +1,8 @@
 ---
 title: "What does it take to let ChatGPT manage my Todoist tasks?"
 description: "Have you ever wondered what it takes to implement an AI assistant that can manage your Todoist inbox? In this blog, I will show you how I implemented my LLM-based Todoist agent using the REACT framework."
-date: 2023-10-07T14:14:45+02:00
-publishdate: 2023-10-07T14:14:45+02:00
+date: 2023-09-17T14:14:45+02:00
+publishdate: 2023-09-17T14:14:45+02:00
 tags: []
 draft: false
 math: false
