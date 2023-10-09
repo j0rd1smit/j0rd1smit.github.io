@@ -3,3 +3,10 @@ Unsplash
 Jordi
 Smit
 autoregressive
+Todoist
+LLMs
+LLM
+Pydantic
+Pydantic's
+parsable
+youtube
