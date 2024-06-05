@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
     - main
+  schedule:
+  - cron: 0 4 * * *
 
 jobs:
   pre_commit:
@@ -41,7 +43,6 @@ jobs:
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
