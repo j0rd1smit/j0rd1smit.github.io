@@ -6495,14 +6495,20 @@
     ERROR: "error",
     LOADING: "loading"
   };
-  var ModelNames = {
-    WHISPER_TINY_EN: "openai/whisper-tiny.en",
-    WHISPER_TINY: "openai/whisper-tiny",
-    WHISPER_BASE: "openai/whisper-base",
-    WHISPER_BASE_EN: "openai/whisper-base.en",
-    WHISPER_SMALL: "openai/whisper-small",
-    WHISPER_SMALL_EN: "openai/whisper-small.en"
-  };
+  var ModelNames = [
+    "distil-whisper/distil-small.en",
+    "distil-whisper/distil-medium.en",
+    "distil-whisper/distil-large-v3",
+    "Xenova/whisper-tiny.en",
+    "Xenova/whisper-tiny",
+    "Xenova/whisper-base.en",
+    "Xenova/whisper-base",
+    "Xenova/whisper-small.en",
+    "Xenova/whisper-small",
+    "Xenova/whisper-medium",
+    "Xenova/whisper-medium.en",
+    "Xenova/whisper-large"
+  ];
 
   // node_modules/@popperjs/core/lib/index.js
   var lib_exports = {};
@@ -11832,6 +11838,12 @@
   );
   var WORKER;
   (0, import_jquery.default)(document).ready(() => {
+    for (const modelName of ModelNames) {
+      const option = document.createElement("option");
+      option.value = modelName;
+      option.innerText = modelName;
+      MODEL_NAME_SELECTION_INPUT.appendChild(option);
+    }
     FORM_SUBMIT_BTN.disabled = true;
     FORM_SUBMIT_BTN.addEventListener("click", async (event2) => {
       event2.preventDefault();
@@ -11856,6 +11868,7 @@
       downloadTranscript();
     });
     WORKER = createWorker();
+    onFormInputChanges();
   });
   function createWorker() {
     const worker = new Worker(whisperWorkerPath);
@@ -11954,7 +11967,7 @@
   function createResultLine(result, isDone) {
     const { start: start2, end: end2, text } = result;
     const span = document.createElement("span");
-    span.innerText = text;
+    span.innerText = removeSpecialCharacters(text);
     span.onclick = () => jumpVideoToTime(start2);
     span.setAttribute("class", GENERATED_TEXT_CLASS);
     span.setAttribute(START_TIME_ATTR, `${start2}`);
@@ -11967,11 +11980,14 @@
     }
     return span;
   }
+  function removeSpecialCharacters(inputString) {
+    return inputString.replace(/<\|\d+\.\d+\|>/g, "");
+  }
   async function handleFormSubmission() {
     if (!isFileUploaded() || !isModelNameSelected()) {
       return;
     }
-    const model_name = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
+    const model_name = `${MODEL_NAME_SELECTION_INPUT.value}`;
     const file = FILE_UPLOAD_BTN.files[0];
     const audio = await readAudioFrom(file);
     WORKER.postMessage({
@@ -11995,7 +12011,7 @@
     showElement(TRANSCRIPT_CONTAINER);
     setProgressBarTo(0);
     showElement(PROGRESS_BAR_CONTAINER);
-    MODEL_NAME_DISPLAY.innerText = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
+    MODEL_NAME_DISPLAY.innerText = `${MODEL_NAME_SELECTION_INPUT.value}`;
     RESULTS_CONTAINER.innerHTML = "";
     PARTIAL_RESULTS_CONTAINER.innerHTML = "";
   }
@@ -12013,12 +12029,11 @@
     return true;
   }
   function isModelNameSelected() {
-    const selectedValue = MODEL_NAME_SELECTION_INPUT.value;
+    const modelName = MODEL_NAME_SELECTION_INPUT.value;
     if (MODEL_NAME_SELECTION_INPUT.value === "") {
       return false;
     }
-    const modelName = `openai/${selectedValue}`;
-    return Object.values(ModelNames).indexOf(modelName) !== -1;
+    return ModelNames.indexOf(modelName) !== -1;
   }
   function hideElement(element) {
     if (!element.classList.contains(HIDDEN_CLASS)) {
