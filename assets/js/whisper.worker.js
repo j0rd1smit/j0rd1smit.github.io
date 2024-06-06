@@ -2,7 +2,7 @@ import { createModelLoader } from "./modelFactories.js";
 import { MessageTypes, ModelNames } from "./utils.js";
 
 const modelLoaders = {};
-for (const model_name of Object.values(ModelNames)) {
+for (const model_name of ModelNames) {
   modelLoaders[model_name] = createModelLoader(model_name);
 }
 
@@ -19,7 +19,7 @@ async function transcribe(audio, model_name) {
 
   if (!modelLoaders[model_name]) {
     console.log("Model not found");
-    sendLoadingMessage("error", "Model not found");
+    sendLoadingMessage("error", `Model not found: ${model_name}`);
     return;
   }
 

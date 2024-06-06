@@ -13,13 +13,19 @@ const LoadingStatus = {
   LOADING: "loading",
 };
 
-const ModelNames = {
-  WHISPER_TINY_EN: "openai/whisper-tiny.en",
-  WHISPER_TINY: "openai/whisper-tiny",
-  WHISPER_BASE: "openai/whisper-base",
-  WHISPER_BASE_EN: "openai/whisper-base.en",
-  WHISPER_SMALL: "openai/whisper-small",
-  WHISPER_SMALL_EN: "openai/whisper-small.en",
-};
+const ModelNames = [
+  "distil-whisper/distil-small.en",
+  "distil-whisper/distil-medium.en",
+  "distil-whisper/distil-large-v3",
+  "Xenova/whisper-tiny.en",
+  "Xenova/whisper-tiny",
+  "Xenova/whisper-base.en",
+  "Xenova/whisper-base",
+  "Xenova/whisper-small.en",
+  "Xenova/whisper-small",
+  "Xenova/whisper-medium",
+  "Xenova/whisper-medium.en",
+  "Xenova/whisper-large",
+];
 
 export { MessageTypes, ModelNames, LoadingStatus };

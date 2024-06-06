@@ -44,6 +44,13 @@ const LOADING_MESSAGE_CONTAINER = document.getElementById(
 let WORKER;
 
 $(document).ready(() => {
+  for (const modelName of ModelNames) {
+    const option = document.createElement("option");
+    option.value = modelName;
+    option.innerText = modelName;
+    MODEL_NAME_SELECTION_INPUT.appendChild(option);
+  }
+
   FORM_SUBMIT_BTN.disabled = true;
   /** Form view elements **/
   FORM_SUBMIT_BTN.addEventListener("click", async (event) => {
@@ -70,6 +77,7 @@ $(document).ready(() => {
     downloadTranscript();
   });
   WORKER = createWorker();
+  onFormInputChanges();
 });
 
 function createWorker() {
@@ -193,7 +201,7 @@ function createResultLine(result, isDone) {
   const { start, end, text } = result;
 
   const span = document.createElement("span");
-  span.innerText = text;
+  span.innerText = removeSpecialCharacters(text);
   span.onclick = () => jumpVideoToTime(start);
   span.setAttribute("class", GENERATED_TEXT_CLASS);
   span.setAttribute(START_TIME_ATTR, `${start}`);
@@ -211,12 +219,16 @@ function createResultLine(result, isDone) {
   return span;
 }
 
+function removeSpecialCharacters(inputString) {
+  return inputString.replace(/<\|\d+\.\d+\|>/g, "");
+}
+
 async function handleFormSubmission() {
   if (!isFileUploaded() || !isModelNameSelected()) {
     return;
   }
 
-  const model_name = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
+  const model_name = `${MODEL_NAME_SELECTION_INPUT.value}`;
   const file = FILE_UPLOAD_BTN.files[0];
   const audio = await readAudioFrom(file);
 
@@ -243,7 +255,7 @@ function showTranscriptionView() {
   showElement(TRANSCRIPT_CONTAINER);
   setProgressBarTo(0);
   showElement(PROGRESS_BAR_CONTAINER);
-  MODEL_NAME_DISPLAY.innerText = `openai/${MODEL_NAME_SELECTION_INPUT.value}`;
+  MODEL_NAME_DISPLAY.innerText = `${MODEL_NAME_SELECTION_INPUT.value}`;
   RESULTS_CONTAINER.innerHTML = "";
   PARTIAL_RESULTS_CONTAINER.innerHTML = "";
 }
@@ -265,13 +277,12 @@ function isFileUploaded() {
 }
 
 function isModelNameSelected() {
-  const selectedValue = MODEL_NAME_SELECTION_INPUT.value;
+  const modelName = MODEL_NAME_SELECTION_INPUT.value;
 
   if (MODEL_NAME_SELECTION_INPUT.value === "") {
     return false;
   }
-  const modelName = `openai/${selectedValue}`;
-  return Object.values(ModelNames).indexOf(modelName) !== -1;
+  return ModelNames.indexOf(modelName) !== -1;
 }
 
 function hideElement(element) {
