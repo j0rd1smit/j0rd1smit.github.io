@@ -28,14 +28,17 @@ async function transcribe(audio, model_name) {
   });
   sendLoadingMessage("success");
 
-  const stride_length_s = 5;
+  const isDistilWhisper = model_name.includes("distil-whisper");
+  const stride_length_s = isDistilWhisper ? 3 : 5;
   const generationTracker = new GenerationTracker(pipeline, stride_length_s);
+
   await pipeline(audio, {
-    top_k: 0, // TODO: make this configurable via request
-    do_sample: false, // TODO: make this configurable via request
-    chunk_length_s: 30, // TODO: make this configurable via request
-    stride_length_s: stride_length_s, // TODO: make this configurable via request
+    top_k: 0,
+    do_sample: false,
+    chunk_length_s: isDistilWhisper ? 20 : 30,
+    stride_length_s: stride_length_s,
     return_timestamps: true,
+    force_full_sequences: false,
     callback_function:
       generationTracker.callbackFunction.bind(generationTracker),
     chunk_callback: generationTracker.chunkCallback.bind(generationTracker),
