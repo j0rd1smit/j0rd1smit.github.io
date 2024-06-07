@@ -30333,6 +30333,7 @@ ${t2}`);
     const load_model = async ({ progress_callback = void 0 }) => {
       if (model === null) {
         model = await pipeline("automatic-speech-recognition", model_name, {
+          quantized: true,
           progress_callback
         });
       }
@@ -30387,18 +30388,16 @@ ${t2}`);
       callback_function: load_model_callback
     });
     sendLoadingMessage("success");
-    const stride_length_s = 5;
+    const isDistilWhisper = model_name.includes("distil-whisper");
+    const stride_length_s = isDistilWhisper ? 3 : 5;
     const generationTracker = new GenerationTracker(pipeline2, stride_length_s);
     await pipeline2(audio, {
       top_k: 0,
-      // TODO: make this configurable via request
       do_sample: false,
-      // TODO: make this configurable via request
-      chunk_length_s: 30,
-      // TODO: make this configurable via request
+      chunk_length_s: isDistilWhisper ? 20 : 30,
       stride_length_s,
-      // TODO: make this configurable via request
       return_timestamps: true,
+      force_full_sequences: false,
       callback_function: generationTracker.callbackFunction.bind(generationTracker),
       chunk_callback: generationTracker.chunkCallback.bind(generationTracker)
     });
