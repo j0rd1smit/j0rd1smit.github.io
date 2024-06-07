@@ -5,6 +5,7 @@ function createModelLoader(model_name) {
   const load_model = async ({ progress_callback = undefined }) => {
     if (model === null) {
       model = await pipeline("automatic-speech-recognition", model_name, {
+        quantized: true,
         progress_callback,
       });
     }
