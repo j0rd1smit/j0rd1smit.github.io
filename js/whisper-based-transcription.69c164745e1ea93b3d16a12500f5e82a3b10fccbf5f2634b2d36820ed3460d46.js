@@ -8764,7 +8764,7 @@
   var EVENT_CLOSED = `closed${EVENT_KEY$b}`;
   var CLASS_NAME_FADE$5 = "fade";
   var CLASS_NAME_SHOW$8 = "show";
-  var Alert = class extends BaseComponent {
+  var Alert = class _Alert extends BaseComponent {
     // Getters
     static get NAME() {
       return NAME$f;
@@ -8788,7 +8788,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Alert.getOrCreateInstance(this);
+        const data = _Alert.getOrCreateInstance(this);
         if (typeof config !== "string") {
           return;
         }
@@ -8808,7 +8808,7 @@
   var CLASS_NAME_ACTIVE$3 = "active";
   var SELECTOR_DATA_TOGGLE$5 = '[data-bs-toggle="button"]';
   var EVENT_CLICK_DATA_API$6 = `click${EVENT_KEY$a}${DATA_API_KEY$6}`;
-  var Button = class extends BaseComponent {
+  var Button = class _Button extends BaseComponent {
     // Getters
     static get NAME() {
       return NAME$e;
@@ -8820,7 +8820,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Button.getOrCreateInstance(this);
+        const data = _Button.getOrCreateInstance(this);
         if (config === "toggle") {
           data[config]();
         }
@@ -8900,11 +8900,11 @@
     leftCallback: "(function|null)",
     rightCallback: "(function|null)"
   };
-  var Swipe = class extends Config {
+  var Swipe = class _Swipe extends Config {
     constructor(element, config) {
       super();
       this._element = element;
-      if (!element || !Swipe.isSupported()) {
+      if (!element || !_Swipe.isSupported()) {
         return;
       }
       this._config = this._getConfig(config);
@@ -9031,7 +9031,7 @@
     touch: "boolean",
     wrap: "boolean"
   };
-  var Carousel = class extends BaseComponent {
+  var Carousel = class _Carousel extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._interval = null;
@@ -9261,7 +9261,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Carousel.getOrCreateInstance(this, config);
+        const data = _Carousel.getOrCreateInstance(this, config);
         if (typeof config === "number") {
           data.to(config);
           return;
@@ -9330,7 +9330,7 @@
     parent: "(null|element)",
     toggle: "boolean"
   };
-  var Collapse = class extends BaseComponent {
+  var Collapse = class _Collapse extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._isTransitioning = false;
@@ -9375,7 +9375,7 @@
       }
       let activeChildren = [];
       if (this._config.parent) {
-        activeChildren = this._getFirstLevelChildren(SELECTOR_ACTIVES).filter((element) => element !== this._element).map((element) => Collapse.getOrCreateInstance(element, {
+        activeChildren = this._getFirstLevelChildren(SELECTOR_ACTIVES).filter((element) => element !== this._element).map((element) => _Collapse.getOrCreateInstance(element, {
           toggle: false
         }));
       }
@@ -9480,7 +9480,7 @@
         _config.toggle = false;
       }
       return this.each(function() {
-        const data = Collapse.getOrCreateInstance(this, _config);
+        const data = _Collapse.getOrCreateInstance(this, _config);
         if (typeof config === "string") {
           if (typeof data[config] === "undefined") {
             throw new TypeError(`No method named "${config}"`);
@@ -9555,7 +9555,7 @@
     popperConfig: "(null|object|function)",
     reference: "(string|element|object)"
   };
-  var Dropdown = class extends BaseComponent {
+  var Dropdown = class _Dropdown extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._popper = null;
@@ -9741,7 +9741,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Dropdown.getOrCreateInstance(this, config);
+        const data = _Dropdown.getOrCreateInstance(this, config);
         if (typeof config !== "string") {
           return;
         }
@@ -9757,7 +9757,7 @@
       }
       const openToggles = SelectorEngine.find(SELECTOR_DATA_TOGGLE_SHOWN);
       for (const toggle of openToggles) {
-        const context = Dropdown.getInstance(toggle);
+        const context = _Dropdown.getInstance(toggle);
         if (!context || context._config.autoClose === false) {
           continue;
         }
@@ -9790,7 +9790,7 @@
       }
       event2.preventDefault();
       const getToggleButton = this.matches(SELECTOR_DATA_TOGGLE$3) ? this : SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE$3)[0] || SelectorEngine.next(this, SELECTOR_DATA_TOGGLE$3)[0] || SelectorEngine.findOne(SELECTOR_DATA_TOGGLE$3, event2.delegateTarget.parentNode);
-      const instance = Dropdown.getOrCreateInstance(getToggleButton);
+      const instance = _Dropdown.getOrCreateInstance(getToggleButton);
       if (isUpOrDownEvent) {
         event2.stopPropagation();
         instance.show();
@@ -10101,7 +10101,7 @@
     focus: "boolean",
     keyboard: "boolean"
   };
-  var Modal = class extends BaseComponent {
+  var Modal = class _Modal extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._dialog = SelectorEngine.findOne(SELECTOR_DIALOG, this._element);
@@ -10300,7 +10300,7 @@
     // Static
     static jQueryInterface(config, relatedTarget) {
       return this.each(function() {
-        const data = Modal.getOrCreateInstance(this, config);
+        const data = _Modal.getOrCreateInstance(this, config);
         if (typeof config !== "string") {
           return;
         }
@@ -10365,7 +10365,7 @@
     keyboard: "boolean",
     scroll: "boolean"
   };
-  var Offcanvas = class extends BaseComponent {
+  var Offcanvas = class _Offcanvas extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._isShown = false;
@@ -10484,7 +10484,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Offcanvas.getOrCreateInstance(this, config);
+        const data = _Offcanvas.getOrCreateInstance(this, config);
         if (typeof config !== "string") {
           return;
         }
@@ -10784,7 +10784,7 @@
     title: "(string|element|function)",
     trigger: "string"
   };
-  var Tooltip = class extends BaseComponent {
+  var Tooltip = class _Tooltip extends BaseComponent {
     constructor(element, config) {
       if (typeof lib_exports === "undefined") {
         throw new TypeError("Bootstrap's tooltips require Popper (https://popper.js.org)");
@@ -11165,7 +11165,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Tooltip.getOrCreateInstance(this, config);
+        const data = _Tooltip.getOrCreateInstance(this, config);
         if (typeof config !== "string") {
           return;
         }
@@ -11192,7 +11192,7 @@
     ...Tooltip.DefaultType,
     content: "(null|string|element|function)"
   };
-  var Popover = class extends Tooltip {
+  var Popover = class _Popover extends Tooltip {
     // Getters
     static get Default() {
       return Default$2;
@@ -11220,7 +11220,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Popover.getOrCreateInstance(this, config);
+        const data = _Popover.getOrCreateInstance(this, config);
         if (typeof config !== "string") {
           return;
         }
@@ -11266,7 +11266,7 @@
     target: "element",
     threshold: "array"
   };
-  var ScrollSpy = class extends BaseComponent {
+  var ScrollSpy = class _ScrollSpy extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._targetLinks = /* @__PURE__ */ new Map();
@@ -11423,7 +11423,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = ScrollSpy.getOrCreateInstance(this, config);
+        const data = _ScrollSpy.getOrCreateInstance(this, config);
         if (typeof config !== "string") {
           return;
         }
@@ -11467,7 +11467,7 @@
   var SELECTOR_DATA_TOGGLE = '[data-bs-toggle="tab"], [data-bs-toggle="pill"], [data-bs-toggle="list"]';
   var SELECTOR_INNER_ELEM = `${SELECTOR_INNER}, ${SELECTOR_DATA_TOGGLE}`;
   var SELECTOR_DATA_TOGGLE_ACTIVE = `.${CLASS_NAME_ACTIVE}[data-bs-toggle="tab"], .${CLASS_NAME_ACTIVE}[data-bs-toggle="pill"], .${CLASS_NAME_ACTIVE}[data-bs-toggle="list"]`;
-  var Tab = class extends BaseComponent {
+  var Tab = class _Tab extends BaseComponent {
     constructor(element) {
       super(element);
       this._parent = this._element.closest(SELECTOR_TAB_PANEL);
@@ -11554,7 +11554,7 @@
         nextActiveElement.focus({
           preventScroll: true
         });
-        Tab.getOrCreateInstance(nextActiveElement).show();
+        _Tab.getOrCreateInstance(nextActiveElement).show();
       }
     }
     _getChildren() {
@@ -11627,7 +11627,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Tab.getOrCreateInstance(this);
+        const data = _Tab.getOrCreateInstance(this);
         if (typeof config !== "string") {
           return;
         }
@@ -11678,7 +11678,7 @@
     autohide: true,
     delay: 5e3
   };
-  var Toast = class extends BaseComponent {
+  var Toast = class _Toast extends BaseComponent {
     constructor(element, config) {
       super(element, config);
       this._timeout = null;
@@ -11790,7 +11790,7 @@
     // Static
     static jQueryInterface(config) {
       return this.each(function() {
-        const data = Toast.getOrCreateInstance(this, config);
+        const data = _Toast.getOrCreateInstance(this, config);
         if (typeof config === "string") {
           if (typeof data[config] === "undefined") {
             throw new TypeError(`No method named "${config}"`);

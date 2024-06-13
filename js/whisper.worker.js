@@ -5,7 +5,6 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __commonJS = (cb, mod2) => function __require() {
     return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
   };
@@ -25,10 +24,6 @@
     isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
     mod2
   ));
-  var __publicField = (obj, key, value) => {
-    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-    return value;
-  };
 
   // (disabled):fs
   var require_fs = __commonJS({
@@ -14952,7 +14947,7 @@ ${t2}`);
   }
 
   // node_modules/@xenova/transformers/src/utils/hub.js
-  var FileResponse = class {
+  var FileResponse = class _FileResponse {
     /**
      * Mapping from file extensions to MIME types.
      */
@@ -15010,7 +15005,7 @@ ${t2}`);
      * @returns {FileResponse} A new FileResponse object with the same properties as the current object.
      */
     clone() {
-      let response = new FileResponse(this.filePath);
+      let response = new _FileResponse(this.filePath);
       response.exists = this.exists;
       response.status = this.status;
       response.statusText = this.statusText;
@@ -16030,7 +16025,7 @@ ${t2}`);
     bool: Uint8Array
   });
   var ONNXTensor = ONNX.Tensor;
-  var Tensor = class {
+  var Tensor = class _Tensor {
     /** @type {number[]} Dimensions of the tensor. */
     dims;
     /** @type {DataType} Type of the tensor. */
@@ -16098,7 +16093,7 @@ ${t2}`);
         const iterSize = iterDims.reduce((a, b) => a * b);
         return this._subarray(index, iterSize, iterDims);
       } else {
-        return new Tensor(this.type, [this.data[index]], iterDims);
+        return new _Tensor(this.type, [this.data[index]], iterDims);
       }
     }
     /**
@@ -16123,7 +16118,7 @@ ${t2}`);
       const o1 = index * iterSize;
       const o2 = (index + 1) * iterSize;
       const data = "subarray" in this.data ? this.data.subarray(o1, o2) : this.data.slice(o1, o2);
-      return new Tensor(this.type, data, iterDims);
+      return new _Tensor(this.type, data, iterDims);
     }
     /**
      * Returns the value of this tensor as a standard JavaScript Number. This only works
@@ -16200,7 +16195,7 @@ ${t2}`);
       return this;
     }
     clone() {
-      return new Tensor(this.type, this.data.slice(), this.dims.slice());
+      return new _Tensor(this.type, this.data.slice(), this.dims.slice());
     }
     slice(...slices) {
       let newTensorDims = [];
@@ -16240,7 +16235,7 @@ ${t2}`);
         }
         data[i] = this.data[originalIndex];
       }
-      return new Tensor(this.type, data, newTensorDims);
+      return new _Tensor(this.type, data, newTensorDims);
     }
     /**
      * Return a permuted version of this Tensor, according to the provided dimensions.
@@ -16281,7 +16276,7 @@ ${t2}`);
       }
       if (dim === null) {
         let val = this.data.reduce((a, b) => a + b ** p, 0) ** (1 / p);
-        return new Tensor(this.type, [val], []);
+        return new _Tensor(this.type, [val], []);
       }
       dim = safeIndex(dim, this.dims.length);
       const resultDims = this.dims.slice();
@@ -16308,7 +16303,7 @@ ${t2}`);
       if (!keepdim) {
         resultDims.splice(dim, 1);
       }
-      return new Tensor(this.type, result, resultDims);
+      return new _Tensor(this.type, result, resultDims);
     }
     /**
      * Performs `L_p` normalization of inputs over specified dimension. Operates in place.
@@ -16361,7 +16356,7 @@ ${t2}`);
      * @returns The squeezed tensor
      */
     squeeze(dim = null) {
-      return new Tensor(
+      return new _Tensor(
         this.type,
         this.data,
         calc_squeeze_dims(this.dims, dim)
@@ -16383,7 +16378,7 @@ ${t2}`);
      * @returns The unsqueezed tensor
      */
     unsqueeze(dim = null) {
-      return new Tensor(
+      return new _Tensor(
         this.type,
         this.data,
         calc_unsqueeze_dims(this.dims, dim)
@@ -16439,7 +16434,7 @@ ${t2}`);
         }, 1);
         dims[inferredIndex] = this.data.length / productOther;
       }
-      return new Tensor(this.type, this.data, dims);
+      return new _Tensor(this.type, this.data, dims);
     }
     neg_() {
       for (let i = 0; i < this.data.length; ++i) {
@@ -16495,7 +16490,7 @@ ${t2}`);
       if (!DataTypeMap.hasOwnProperty(type)) {
         throw new Error(`Unsupported type: ${type}`);
       }
-      return new Tensor(type, DataTypeMap[type].from(this.data), this.dims);
+      return new _Tensor(type, DataTypeMap[type].from(this.data), this.dims);
     }
   };
   function reshape(data, dimensions) {
@@ -17016,7 +17011,7 @@ ${t2}`);
       }
     }
   };
-  var CharTrieNode = class {
+  var CharTrieNode = class _CharTrieNode {
     /**
      * Create a new CharTrieNode.
      * @param {boolean} isLeaf Whether the node is a leaf node or not.
@@ -17031,7 +17026,7 @@ ${t2}`);
      * @returns {CharTrieNode} A new `CharTrieNode` instance with `isLeaf` set to `false` and an empty `children` map.
      */
     static default() {
-      return new CharTrieNode(false, /* @__PURE__ */ new Map());
+      return new _CharTrieNode(false, /* @__PURE__ */ new Map());
     }
   };
   var TokenLattice = class {
@@ -17141,7 +17136,7 @@ ${t2}`);
       return nodes.map((x) => x.tokenId);
     }
   };
-  var TokenLatticeNode = class {
+  var TokenLatticeNode = class _TokenLatticeNode {
     /**
      * Represents a node in a token lattice for a given sentence.
      * @param {number} tokenId The ID of the token associated with this node.
@@ -17164,7 +17159,7 @@ ${t2}`);
      * @returns {TokenLatticeNode} A clone of this node.
      */
     clone() {
-      const n = new TokenLatticeNode(this.tokenId, this.nodeId, this.pos, this.length, this.score);
+      const n = new _TokenLatticeNode(this.tokenId, this.nodeId, this.pos, this.length, this.score);
       n.prev = this.prev;
       n.backtraceScore = this.backtraceScore;
       return n;
@@ -21857,6 +21852,54 @@ ${t2}`);
   var CohereTokenizer = class extends PreTrainedTokenizer {
   };
   var AutoTokenizer = class {
+    static TOKENIZER_CLASS_MAPPING = {
+      T5Tokenizer,
+      DistilBertTokenizer,
+      CamembertTokenizer,
+      DebertaTokenizer,
+      DebertaV2Tokenizer,
+      BertTokenizer,
+      HerbertTokenizer,
+      ConvBertTokenizer,
+      RoFormerTokenizer,
+      XLMTokenizer,
+      ElectraTokenizer,
+      MobileBertTokenizer,
+      SqueezeBertTokenizer,
+      AlbertTokenizer,
+      GPT2Tokenizer,
+      BartTokenizer,
+      MBartTokenizer,
+      MBart50Tokenizer,
+      RobertaTokenizer,
+      WhisperTokenizer,
+      CodeGenTokenizer,
+      CLIPTokenizer,
+      SiglipTokenizer,
+      MarianTokenizer,
+      BloomTokenizer,
+      NllbTokenizer,
+      M2M100Tokenizer,
+      LlamaTokenizer,
+      CodeLlamaTokenizer,
+      XLMRobertaTokenizer,
+      MPNetTokenizer,
+      FalconTokenizer,
+      GPTNeoXTokenizer,
+      EsmTokenizer,
+      Wav2Vec2CTCTokenizer,
+      BlenderbotTokenizer,
+      BlenderbotSmallTokenizer,
+      SpeechT5Tokenizer,
+      NougatTokenizer,
+      VitsTokenizer,
+      Qwen2Tokenizer,
+      GemmaTokenizer,
+      Grok1Tokenizer,
+      CohereTokenizer,
+      // Base case:
+      PreTrainedTokenizer
+    };
     /**
      * Instantiate one of the tokenizer classes of the library from a pretrained model.
      * 
@@ -21899,54 +21942,6 @@ ${t2}`);
       return new cls(tokenizerJSON, tokenizerConfig);
     }
   };
-  __publicField(AutoTokenizer, "TOKENIZER_CLASS_MAPPING", {
-    T5Tokenizer,
-    DistilBertTokenizer,
-    CamembertTokenizer,
-    DebertaTokenizer,
-    DebertaV2Tokenizer,
-    BertTokenizer,
-    HerbertTokenizer,
-    ConvBertTokenizer,
-    RoFormerTokenizer,
-    XLMTokenizer,
-    ElectraTokenizer,
-    MobileBertTokenizer,
-    SqueezeBertTokenizer,
-    AlbertTokenizer,
-    GPT2Tokenizer,
-    BartTokenizer,
-    MBartTokenizer,
-    MBart50Tokenizer,
-    RobertaTokenizer,
-    WhisperTokenizer,
-    CodeGenTokenizer,
-    CLIPTokenizer,
-    SiglipTokenizer,
-    MarianTokenizer,
-    BloomTokenizer,
-    NllbTokenizer,
-    M2M100Tokenizer,
-    LlamaTokenizer,
-    CodeLlamaTokenizer,
-    XLMRobertaTokenizer,
-    MPNetTokenizer,
-    FalconTokenizer,
-    GPTNeoXTokenizer,
-    EsmTokenizer,
-    Wav2Vec2CTCTokenizer,
-    BlenderbotTokenizer,
-    BlenderbotSmallTokenizer,
-    SpeechT5Tokenizer,
-    NougatTokenizer,
-    VitsTokenizer,
-    Qwen2Tokenizer,
-    GemmaTokenizer,
-    Grok1Tokenizer,
-    CohereTokenizer,
-    // Base case:
-    PreTrainedTokenizer
-  });
 
   // node_modules/@xenova/transformers/src/configs.js
   async function loadConfig(pretrained_model_name_or_path, options) {
@@ -25643,6 +25638,16 @@ ${t2}`);
     }
   };
   var PretrainedMixin = class {
+    /**
+     * Mapping from model type to model class.
+     * @type {Map<string, Object>[]}
+     */
+    static MODEL_CLASS_MAPPINGS = null;
+    /**
+     * Whether to attempt to instantiate the base class (`PretrainedModel`) if 
+     * the model type is not found in the mapping.
+     */
+    static BASE_IF_FAIL = false;
     /** @type {PreTrainedModel.from_pretrained} */
     static async from_pretrained(pretrained_model_name_or_path, {
       quantized = true,
@@ -25684,16 +25689,6 @@ ${t2}`);
       }
     }
   };
-  /**
-   * Mapping from model type to model class.
-   * @type {Map<string, Object>[]}
-   */
-  __publicField(PretrainedMixin, "MODEL_CLASS_MAPPINGS", null);
-  /**
-   * Whether to attempt to instantiate the base class (`PretrainedModel`) if 
-   * the model type is not found in the mapping.
-   */
-  __publicField(PretrainedMixin, "BASE_IF_FAIL", false);
   var MODEL_MAPPING_NAMES_ENCODER_ONLY = /* @__PURE__ */ new Map([
     ["bert", ["BertModel", BertModel]],
     ["nomic_bert", ["NomicBertModel", NomicBertModel]],
@@ -26017,74 +26012,74 @@ ${t2}`);
     MODEL_NAME_TO_CLASS_MAPPING.set(name2, model);
   }
   var AutoModel = class extends PretrainedMixin {
+    /** @type {Map<string, Object>[]} */
+    // @ts-ignore
+    static MODEL_CLASS_MAPPINGS = MODEL_CLASS_TYPE_MAPPING.map((x) => x[0]);
+    static BASE_IF_FAIL = true;
   };
-  /** @type {Map<string, Object>[]} */
-  // @ts-ignore
-  __publicField(AutoModel, "MODEL_CLASS_MAPPINGS", MODEL_CLASS_TYPE_MAPPING.map((x) => x[0]));
-  __publicField(AutoModel, "BASE_IF_FAIL", true);
   var AutoModelForSequenceClassification = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForSequenceClassification, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING_NAMES]);
   var AutoModelForTokenClassification = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForTokenClassification, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES]);
   var AutoModelForSeq2SeqLM = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING_NAMES];
   };
-  __publicField(AutoModelForSeq2SeqLM, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING_NAMES]);
   var AutoModelForSpeechSeq2Seq = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_SPEECH_SEQ_2_SEQ_MAPPING_NAMES];
   };
-  __publicField(AutoModelForSpeechSeq2Seq, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_SPEECH_SEQ_2_SEQ_MAPPING_NAMES]);
   var AutoModelForTextToSpectrogram = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_TEXT_TO_SPECTROGRAM_MAPPING_NAMES];
   };
-  __publicField(AutoModelForTextToSpectrogram, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_TEXT_TO_SPECTROGRAM_MAPPING_NAMES]);
   var AutoModelForTextToWaveform = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_TEXT_TO_WAVEFORM_MAPPING_NAMES];
   };
-  __publicField(AutoModelForTextToWaveform, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_TEXT_TO_WAVEFORM_MAPPING_NAMES]);
   var AutoModelForCausalLM = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_WITH_LM_HEAD_MAPPING_NAMES];
   };
-  __publicField(AutoModelForCausalLM, "MODEL_CLASS_MAPPINGS", [MODEL_WITH_LM_HEAD_MAPPING_NAMES]);
   var AutoModelForMaskedLM = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_MASKED_LM_MAPPING_NAMES];
   };
-  __publicField(AutoModelForMaskedLM, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_MASKED_LM_MAPPING_NAMES]);
   var AutoModelForQuestionAnswering = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_QUESTION_ANSWERING_MAPPING_NAMES];
   };
-  __publicField(AutoModelForQuestionAnswering, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_QUESTION_ANSWERING_MAPPING_NAMES]);
   var AutoModelForVision2Seq = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_VISION_2_SEQ_MAPPING_NAMES];
   };
-  __publicField(AutoModelForVision2Seq, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_VISION_2_SEQ_MAPPING_NAMES]);
   var AutoModelForImageClassification = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_IMAGE_CLASSIFICATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForImageClassification, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_IMAGE_CLASSIFICATION_MAPPING_NAMES]);
   var AutoModelForImageSegmentation = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_IMAGE_SEGMENTATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForImageSegmentation, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_IMAGE_SEGMENTATION_MAPPING_NAMES]);
   var AutoModelForSemanticSegmentation = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_SEMANTIC_SEGMENTATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForSemanticSegmentation, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_SEMANTIC_SEGMENTATION_MAPPING_NAMES]);
   var AutoModelForObjectDetection = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_OBJECT_DETECTION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForObjectDetection, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_OBJECT_DETECTION_MAPPING_NAMES]);
   var AutoModelForZeroShotObjectDetection = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_ZERO_SHOT_OBJECT_DETECTION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForZeroShotObjectDetection, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_ZERO_SHOT_OBJECT_DETECTION_MAPPING_NAMES]);
   var AutoModelForCTC = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_CTC_MAPPING_NAMES];
   };
-  __publicField(AutoModelForCTC, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_CTC_MAPPING_NAMES]);
   var AutoModelForAudioClassification = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_AUDIO_CLASSIFICATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForAudioClassification, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_AUDIO_CLASSIFICATION_MAPPING_NAMES]);
   var AutoModelForDocumentQuestionAnswering = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_DOCUMENT_QUESTION_ANSWERING_MAPPING_NAMES];
   };
-  __publicField(AutoModelForDocumentQuestionAnswering, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_DOCUMENT_QUESTION_ANSWERING_MAPPING_NAMES]);
   var AutoModelForImageToImage = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_IMAGE_TO_IMAGE_MAPPING_NAMES];
   };
-  __publicField(AutoModelForImageToImage, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_IMAGE_TO_IMAGE_MAPPING_NAMES]);
   var AutoModelForDepthEstimation = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_DEPTH_ESTIMATION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForDepthEstimation, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_DEPTH_ESTIMATION_MAPPING_NAMES]);
   var AutoModelForImageFeatureExtraction = class extends PretrainedMixin {
+    static MODEL_CLASS_MAPPINGS = [MODEL_FOR_IMAGE_FEATURE_EXTRACTION_MAPPING_NAMES];
   };
-  __publicField(AutoModelForImageFeatureExtraction, "MODEL_CLASS_MAPPINGS", [MODEL_FOR_IMAGE_FEATURE_EXTRACTION_MAPPING_NAMES]);
   var Seq2SeqLMOutput = class extends ModelOutput {
     /**
      * @param {Object} output The output of the model.
@@ -26235,7 +26230,7 @@ ${t2}`);
     ["jpeg", "image/jpeg"],
     ["gif", "image/gif"]
   ]);
-  var RawImage = class {
+  var RawImage = class _RawImage {
     /**
      * Create a new `RawImage` object.
      * @param {Uint8ClampedArray|Uint8Array} data The pixel data.
@@ -26273,7 +26268,7 @@ ${t2}`);
      * ```
      */
     static async read(input) {
-      if (input instanceof RawImage) {
+      if (input instanceof _RawImage) {
         return input;
       } else if (typeof input === "string" || input instanceof URL) {
         return await this.fromURL(input);
@@ -26332,7 +26327,7 @@ ${t2}`);
         case 2:
         case 3:
         case 4:
-          return new RawImage(tensor.data, tensor.dims[1], tensor.dims[0], tensor.dims[2]);
+          return new _RawImage(tensor.data, tensor.dims[1], tensor.dims[0], tensor.dims[2]);
         default:
           throw new Error(`Unsupported number of channels: ${tensor.dims[2]}`);
       }
@@ -26438,7 +26433,7 @@ ${t2}`);
         let canvas = this.toCanvas();
         const ctx = createCanvasFunction(width, height).getContext("2d");
         ctx.drawImage(canvas, 0, 0, width, height);
-        let resizedImage = new RawImage(ctx.getImageData(0, 0, width, height).data, width, height, 4);
+        let resizedImage = new _RawImage(ctx.getImageData(0, 0, width, height).data, width, height, 4);
         return resizedImage.convert(numChannels);
       } else {
         let img = this.toSharp();
@@ -26496,7 +26491,7 @@ ${t2}`);
           newWidth,
           newHeight
         );
-        let paddedImage = new RawImage(
+        let paddedImage = new _RawImage(
           ctx.getImageData(0, 0, newWidth, newHeight).data,
           newWidth,
           newHeight,
@@ -26533,7 +26528,7 @@ ${t2}`);
           crop_width,
           crop_height
         );
-        const resizedImage = new RawImage(ctx.getImageData(0, 0, crop_width, crop_height).data, crop_width, crop_height, 4);
+        const resizedImage = new _RawImage(ctx.getImageData(0, 0, crop_width, crop_height).data, crop_width, crop_height, 4);
         return resizedImage.convert(numChannels);
       } else {
         const img = this.toSharp().extract({
@@ -26580,7 +26575,7 @@ ${t2}`);
           crop_width,
           crop_height
         );
-        let resizedImage = new RawImage(ctx.getImageData(0, 0, crop_width, crop_height).data, crop_width, crop_height, 4);
+        let resizedImage = new _RawImage(ctx.getImageData(0, 0, crop_width, crop_height).data, crop_width, crop_height, 4);
         return resizedImage.convert(numChannels);
       } else {
         let img = this.toSharp();
@@ -26686,7 +26681,7 @@ ${t2}`);
      * @returns {RawImage} The cloned image
      */
     clone() {
-      return new RawImage(this.data.slice(), this.width, this.height, this.channels);
+      return new _RawImage(this.data.slice(), this.width, this.height, this.channels);
     }
     /**
      * Helper method for converting image to have a certain number of channels
@@ -28680,6 +28675,48 @@ ${t2}`);
   var OwlViTProcessor = class extends Processor {
   };
   var AutoProcessor = class {
+    static FEATURE_EXTRACTOR_CLASS_MAPPING = {
+      ImageFeatureExtractor,
+      WhisperFeatureExtractor,
+      ViTFeatureExtractor,
+      MobileViTFeatureExtractor,
+      MobileViTImageProcessor,
+      OwlViTFeatureExtractor,
+      Owlv2ImageProcessor,
+      CLIPFeatureExtractor,
+      ChineseCLIPFeatureExtractor,
+      SiglipImageProcessor,
+      ConvNextFeatureExtractor,
+      ConvNextImageProcessor,
+      SegformerFeatureExtractor,
+      BitImageProcessor,
+      DPTImageProcessor,
+      DPTFeatureExtractor,
+      GLPNFeatureExtractor,
+      BeitFeatureExtractor,
+      DeiTFeatureExtractor,
+      DetrFeatureExtractor,
+      YolosFeatureExtractor,
+      DonutFeatureExtractor,
+      NougatImageProcessor,
+      EfficientNetImageProcessor,
+      ViTImageProcessor,
+      VitMatteImageProcessor,
+      SamImageProcessor,
+      Swin2SRImageProcessor,
+      Wav2Vec2FeatureExtractor,
+      SeamlessM4TFeatureExtractor,
+      SpeechT5FeatureExtractor,
+      ASTFeatureExtractor,
+      ClapFeatureExtractor
+    };
+    static PROCESSOR_CLASS_MAPPING = {
+      WhisperProcessor,
+      Wav2Vec2ProcessorWithLM,
+      SamProcessor,
+      SpeechT5Processor,
+      OwlViTProcessor
+    };
     /**
      * Instantiate one of the processor classes of the library from a pretrained model.
      * 
@@ -28724,48 +28761,6 @@ ${t2}`);
       return new processor_class(feature_extractor);
     }
   };
-  __publicField(AutoProcessor, "FEATURE_EXTRACTOR_CLASS_MAPPING", {
-    ImageFeatureExtractor,
-    WhisperFeatureExtractor,
-    ViTFeatureExtractor,
-    MobileViTFeatureExtractor,
-    MobileViTImageProcessor,
-    OwlViTFeatureExtractor,
-    Owlv2ImageProcessor,
-    CLIPFeatureExtractor,
-    ChineseCLIPFeatureExtractor,
-    SiglipImageProcessor,
-    ConvNextFeatureExtractor,
-    ConvNextImageProcessor,
-    SegformerFeatureExtractor,
-    BitImageProcessor,
-    DPTImageProcessor,
-    DPTFeatureExtractor,
-    GLPNFeatureExtractor,
-    BeitFeatureExtractor,
-    DeiTFeatureExtractor,
-    DetrFeatureExtractor,
-    YolosFeatureExtractor,
-    DonutFeatureExtractor,
-    NougatImageProcessor,
-    EfficientNetImageProcessor,
-    ViTImageProcessor,
-    VitMatteImageProcessor,
-    SamImageProcessor,
-    Swin2SRImageProcessor,
-    Wav2Vec2FeatureExtractor,
-    SeamlessM4TFeatureExtractor,
-    SpeechT5FeatureExtractor,
-    ASTFeatureExtractor,
-    ClapFeatureExtractor
-  });
-  __publicField(AutoProcessor, "PROCESSOR_CLASS_MAPPING", {
-    WhisperProcessor,
-    Wav2Vec2ProcessorWithLM,
-    SamProcessor,
-    SpeechT5Processor,
-    OwlViTProcessor
-  });
 
   // node_modules/@xenova/transformers/src/pipelines.js
   async function prepareImages(images) {
