@@ -9,7 +9,7 @@ tags:
 - dependency management
 - virtual environment
 - CLI
-image: "/cover.jpg"
+image: "/cover42.jpg"
 use_featured_image: false
 featured_image_size: 200x
 draft: false
