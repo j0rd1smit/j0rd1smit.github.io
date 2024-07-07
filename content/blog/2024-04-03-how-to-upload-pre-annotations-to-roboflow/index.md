@@ -1,9 +1,12 @@
 ---
 title: "How to Upload (Pre)-Annotations to Roboflow"
-description: ""
+description: "Learn how to upload annotations and predictions to Roboflow using the Python SDK, allowing you to import pre-existing datasets or create active learning loops programmatically."
 date: 2024-06-13T21:44:10+02:00
 publishdate: 2024-06-13T21:44:10+02:00
-tags: []
+tags:
+- computer vision
+- labeling
+- roboflow
 draft: false
 math: false
 image: "/cover.png"
@@ -45,7 +48,7 @@ After that is done, we should be ready to get started.
 ## Upload Annotations and Predictions
 We will use the [single_upload](https://docs.roboflow.com/api-reference/images/upload-an-annotation) API endpoint to upload our annotations and predictions.
 To use this function, we need three files:
-- The image file.
+- The image file. Make sure this image has no orientation metadata, read here more why in my blog post: [How to avoid orientation bugs in Computer Vision labeling?](/blog/how-to-avoid-orientation-bugs-in-computer-vision-labeling/).
 - The annotation file. This file should be in the YOLO text format for either bounding boxes (`class_idx x_center y_center width height`) or polygons (`class_idx x_1 y_1 ... x_n y_n`), with normalized coordinates between 0 and 1.
 - The label mapping file. The i-th line in this file contains the name of the corresponding class.
 

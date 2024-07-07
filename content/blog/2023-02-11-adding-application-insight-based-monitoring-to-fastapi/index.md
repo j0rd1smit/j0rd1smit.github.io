@@ -11,7 +11,7 @@ tags:
 - azure
 draft: false
 math: false
-image: "cover.jpg"
+image: "cover42.jpg"
 use_featured_image: true
 featured_image_size: 600x
 ---

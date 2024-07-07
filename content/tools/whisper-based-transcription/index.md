@@ -14,7 +14,7 @@ tags:
 - AI
 - speech-
 
-image: "/cover.jpg"
+image: "/cover42.jpg"
 draft: false
 math: false
 use_featured_image: false

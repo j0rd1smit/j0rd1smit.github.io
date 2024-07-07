@@ -6,6 +6,8 @@ publishdate: 2024-03-13T19:54:44+02:00
 tags:
 - computer vision
 - labeling
+- roboflow
+- label studio
 draft: false
 math: false
 image: "/cover.png"
