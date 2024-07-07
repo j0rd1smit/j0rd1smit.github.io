@@ -19,6 +19,7 @@ They have one of the most user-friendly labeling interfaces.
 I have been using it for quite some time now.
 However, only recently did I learn that you can also upload annotations and predictions programmatically.
 This creates some new possibilities like:
+
 - Programmatically importing pre-existing datasets.
 - Uploading pre-annotations to speed up the labeling process.
 - Creating active learning loops.
@@ -28,11 +29,13 @@ Sadly, the documentation is not entirely clear on how to use this feature.
 So, in this post, I will show you how to use the Roboflow Python SDK to upload annotations and predictions to your Roboflow projects.
 
 ## Preparing the Environment
+
 Before we can start, we have to gather some information first.
 You will need your Roboflow API key, the name of your workspace, and the name of your project.
 The workspace and project name can be found in the project URL: `https://app.roboflow.com/workspaces/<your-workspace>/projects/<your-project>`.
 You can find your API key at: `https://app.roboflow.com/<your-workspace>/settings/api`.
 Let's store these values in a `.env` file or in environment variables using the following names:
+
 - `ROBOFLOW_API_KEY`
 - `ROBOFLOW_WORKSPACE`
 - `ROBOFLOW_PROJECT`
@@ -43,11 +46,14 @@ You can do this using pip.
 ```bash
 pip install roboflow
 ```
+
 After that is done, we should be ready to get started.
 
 ## Upload Annotations and Predictions
+
 We will use the [single_upload](https://docs.roboflow.com/api-reference/images/upload-an-annotation) API endpoint to upload our annotations and predictions.
 To use this function, we need three files:
+
 - The image file. Make sure this image has no orientation metadata, read here more why in my blog post: [How to avoid orientation bugs in Computer Vision labeling?](/blog/how-to-avoid-orientation-bugs-in-computer-vision-labeling/).
 - The annotation file. This file should be in the YOLO text format for either bounding boxes (`class_idx x_center y_center width height`) or polygons (`class_idx x_1 y_1 ... x_n y_n`), with normalized coordinates between 0 and 1.
 - The label mapping file. The i-th line in this file contains the name of the corresponding class.
@@ -75,14 +81,13 @@ response = rf_project.single_upload(
 )
 ```
 
-This code snippet can be used to upload both annotations and predictions. 
+This code snippet can be used to upload both annotations and predictions.
 The only difference is the `is_prediction` parameter.
-If it is set to `False`, Roboflow directly adds the annotations to your dataset. 
+If it is set to `False`, Roboflow directly adds the annotations to your dataset.
 If this parameter is set to `True`, Roboflow will create a new annotation job with the name specified in the `batch_name` parameter.
 That way, the labelers still need to review the annotations and optionally adjust them before they are added to the dataset.
 If you use this function to upload multiple images with their predictions using the same `batch_name`, Roboflow will group them together in a single annotation job.
 This way, you have full control over which images and their pre-annotations end up in which annotation job.
-
 
 ## How does it look like in the UI?
 
@@ -103,6 +108,7 @@ Once you are happy, go back to the annotation overview of the labeling job and c
 Afterward, the pre-annotations will be added to your dataset like any other annotation.
 
 ## Optional: Down-Sampling of Polygons
+
 When you generate pre-annotations for polygons using a model, you might have too many points in the polygon.
 When you upload these polygons, it is impossible to adjust them due to the sheer number of points you have to move.
 To prevent this, you can downsample your polygons before uploading them.
@@ -159,12 +165,13 @@ def _distance_from_line(
         den = math.sqrt((line_end[1] - line_start[1]) ** 2 + (line_end[0] - line_start[0]) ** 2)
         return num / den
 ```
+
 In this algorithm, you can control how much you want to down-sample your polygons by tuning the `epsilon` parameter.
 However, this is a trade-off since more down-sampling means less accurate polygons.
 So, use this parameter to find the right balance for your use case.
 
-
 ## Wrap Up
+
 To wrap up, using the Roboflow Python SDK to upload annotations and predictions opens up many new possibilities.
 It has certainly changed how I work with Roboflow.
 I hope this insight will help you in your future computer vision adventures.
