@@ -38,3 +38,15 @@ repos:
   - id: markdownlint-fix
     name: Format Markdown files
     exclude: ^utils
+
+- repo: local
+  hooks:
+  - id: verify_data_matches_folder
+    name: verify_data_matches_folder
+    files: ^content/(blog|til)/.*/index\.md$
+    stages: [commit]
+    language: python
+    additional_dependencies:
+    - python-frontmatter==1.1.0
+    args: []
+    entry: python scripts/verify_data_matches_folder.py

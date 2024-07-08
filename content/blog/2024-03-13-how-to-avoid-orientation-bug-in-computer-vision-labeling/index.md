@@ -1,7 +1,7 @@
 ---
 title: "How to avoid orientation bugs in Computer Vision labeling?"
 description: "Image orientation metadata can cause strange bugs. This post teaches you how to identify these bugs and how to fix them."
-date: 2024-04-13T19:54:44+02:00
+date: 2024-03-13T19:54:44+02:00
 publishdate: 2024-03-13T19:54:44+02:00
 tags:
 - computer vision
