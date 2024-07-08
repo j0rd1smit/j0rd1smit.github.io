@@ -1,7 +1,7 @@
 ---
 title: "DIY auto-grad Engine: A Step-by-Step Guide to Calculating Derivatives Automatically"
 description: "Want to understand the magic of Jax, PyTorch, and TensorFlow auto-grad engines? The best to learn is to build your DIY version from scratch in Python."
-date: 2022-12-22TT16:37:27+01:00
+date: 2022-11-06T16:37:27+01:00
 publishdate: 2022-12-22T16:37:27+01:00
 tags:
 - python

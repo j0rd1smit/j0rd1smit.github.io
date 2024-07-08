@@ -1,8 +1,8 @@
 ---
 title: "How to Upload (Pre)-Annotations to Roboflow"
 description: "Learn how to upload annotations and predictions to Roboflow using the Python SDK, allowing you to import pre-existing datasets or create active learning loops programmatically."
-date: 2024-06-13T21:44:10+02:00
-publishdate: 2024-06-13T21:44:10+02:00
+date: 2024-04-03T21:44:10+02:00
+publishdate: 2024-04-03T21:44:10+02:00
 tags:
 - computer vision
 - labeling
