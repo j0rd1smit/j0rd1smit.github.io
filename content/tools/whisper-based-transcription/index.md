@@ -39,5 +39,3 @@ Want to try it out yourself?
 All you need to do is provide an audio or video file in the form below.
 
 If you find this application useful and would like to support its development, you can buy me a coffee.
-
-<a href="https://buymeacoffee.com/jordismit"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=jordismit&button_colour=5F7FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>
