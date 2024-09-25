@@ -1,7 +1,13 @@
 <!-- begin post -->
 
 <div class="card h-100">
-  <a href="{{ .Permalink }}">
+  <a
+    href="{{ if .Params.external_url }}
+      {{ .Params.external_url }}
+    {{ else }}
+      {{ .Permalink }}
+    {{ end }}"
+  >
     <div class="maxthumb">
       <!--TODO is there a nice way that actually use the yml data in the markdown? -->
       {{ $images := .Resources.ByType "image" }}
@@ -13,9 +19,16 @@
   </a>
   <div class="card-body">
     <h2 class="card-title">
-      <a class="text-dark" href="{{ .Permalink }}">
+      <a
+        href="{{ if .Params.external_url }}
+          {{ .Params.external_url }}
+        {{ else }}
+          {{ .Permalink }}
+        {{ end }}"
+      >
         {{ if (eq .Section "til") }}TIL:{{ end }}
         {{ if (eq .Section "tools") }}Tool:{{ end }}
+        {{ if (eq .Section "talks") }}Talk:{{ end }}
         {{ .Title }}
       </a>
     </h2>
@@ -31,7 +44,9 @@
         <span class="post-date"
           >{{ dateFormat "Jan 2, 2006" .PublishDate }}
           {{ if (ne .Section "tools") }}
-            - {{ .ReadingTime }} min read
+            {{ if gt .ReadingTime 0 }}
+              - {{ .ReadingTime }} min read
+            {{ end }}
           {{ end }}
 
         </span>
