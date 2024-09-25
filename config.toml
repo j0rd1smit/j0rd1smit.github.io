@@ -26,10 +26,22 @@ url = "/cheat-sheets"
 weight = 300
 
 [[menu.main]]
+identifier = "tools"
+name = "Tools"
+url = "/tools"
+weight = 400
+
+[[menu.main]]
+identifier = "talks"
+name = "Talks"
+url = "/talks"
+weight = 500
+
+[[menu.main]]
 identifier = "about"
 name = "About Me"
 url = "/about"
-weight = 400
+weight = 600
 
 [params]
 description = "A Machine Learning Engineer's blog"

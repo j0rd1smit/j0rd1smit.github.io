@@ -12,10 +12,9 @@ tags:
 - transcription
 - whisper
 - AI
-- speech-
+- speech
 
-image: "/cover42.jpg"
-draft: false
+image: "cover.png"
 math: false
 use_featured_image: false
 featured_image_size: 600x
